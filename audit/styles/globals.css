@@ -4,6 +4,23 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+  background:
+    linear-gradient(to right, blue, transparent),
+    url(https://grainy-gradients.vercel.app/noise.svg);
+    background: linear-gradient(135deg, midnightblue, #111);
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+}
+
+@media all and (-webkit-min-device-pixel-ratio:0) and (min-resolution: .001dpcm) {
+  .noise {
+    filter: contrast(125%) brightness(650%) invert(100%);
+    mix-blend-mode: color-dodge;
+  }
 }
 
 a {
@@ -11,5 +28,46 @@ a {
   text-decoration: none;
 }
 
+.content{
+  display: flex;
+  justify-content: center;
+  margin-left: 4rem;
+  margin-right: 4rem;
+   min-height: 100vh;
+  padding: 4rem 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+}
 
+footer{
+  background: lightblue;
+    display: flex;
+  flex: 1;
+  padding: 2rem 0;
+  border-top: 1px solid #eaeaea;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.post-card{
+  background: #ffffff;
+  border-radius: 2px;
+  display: inline-block;
+  width: 350px;
+  height: auto;
+  margin: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.post-card:hover{
+  box-shadow: 0 14px 28px rgba(255,255,255,0.25), 0 10px 10px rgba(255,255,255,0.22);
+}
+
+.navbar{
+  background: blue;
+  width:100%;
+}
 
