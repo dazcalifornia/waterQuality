@@ -1,5 +1,5 @@
 import Head from 'next/head'
-
+import salinity from '../assets/images/salinity.png'
 
 export default function Home() {
   return (
@@ -23,19 +23,20 @@ export default function Home() {
       <div className='post-card'>
         {/*this part is for post */}
         <h2>
-          post title
+          post title  
         </h2>
         <div>
           <p>
             description
           </p>
+          <img src='../assets/images/salinity.png' width="200" height="200" alt='salinity'/>
           <img src='https://source.unsplash.com/user/erondu/200x200' alt='picture'/>
         </div>
         <form>
           <input type="checkbox" id="passmark" name="approve"/>
-          <label for="passmark">Approve</label><br/>
+          <label htmlFor="passmark">Approve</label><br/>
           <input type="checkbox" id="notpassmark" name="notapprove"/>
-          <label for="notpassmark">Not Approve</label><br/>
+          <label htmlFor="notpassmark">Not Approve</label><br/>
           <input type='text'/>
           <button type='submit'>summit</button>
         </form>
