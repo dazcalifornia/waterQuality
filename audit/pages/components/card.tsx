@@ -2,7 +2,7 @@ export default function Card(){
   return (
     <>
     <div className="card">
-      <p>hello</p> 
+      <p>HELLO FROM ANITHER WORLD </p> 
     </div>
     </>
   )

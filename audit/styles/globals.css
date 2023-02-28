@@ -6,11 +6,6 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   height: 100vh;
     filter: contrast(220%) brightness(600%);
-  background: 
-	radial-gradient(circle at 16% -32%, rgba(14,1,76,0.54), rgba(10,4,103,0.03)),
-	radial-gradient(circle at 73% 90%, rgba(0,58,216,0.65), rgba(220,154,115,0.27)),
-	linear-gradient(82deg, rgba(10,4,82,0.19), rgba(255,255,255,0)),
-	url("data:image/svg+xml,%3Csvg viewBox='0 0 242 242' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.66' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 
 }
 
