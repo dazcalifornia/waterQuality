@@ -4,8 +4,28 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  height: 100vh;
+    filter: contrast(220%) brightness(600%);
+  background: 
+	radial-gradient(circle at 16% -32%, rgba(14,1,76,0.54), rgba(10,4,103,0.03)),
+	radial-gradient(circle at 73% 90%, rgba(0,58,216,0.65), rgba(220,154,115,0.27)),
+	linear-gradient(82deg, rgba(10,4,82,0.19), rgba(255,255,255,0)),
+	url("data:image/svg+xml,%3Csvg viewBox='0 0 242 242' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.66' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 
 }
+
+.noise{
+  
+  background: 
+	radial-gradient(circle at 6% 10%, rgba(23,197,184,1),transparent, rgba(205,0,243,1),transparent),
+  
+    url(https://grainy-gradients.vercel.app/noise.svg);
+  filter: contrast(170%) brightness(1000%);
+
+
+}
+
+
 pre {
     font-family: monospace;
     font-size: 16px;
@@ -26,20 +46,19 @@ pre code {
     color: #2196f3; /* Set the color for Python function names */
 }
 
-@media all and (-webkit-min-device-pixel-ratio:0) and (min-resolution: .001dpcm) {
-  .noise {
-    filter: contrast(125%) brightness(650%) invert(100%);
-    mix-blend-mode: color-dodge;
-  }
-}
 .bg-noisy{
-    background: linear-gradient(to right, blue, transparent),url(https://grainy-gradients.vercel.app/noise.svg);
-  background: linear-gradient(135deg, midnightblue, #111);
-  height: 100vh;
-  background-repeat: no-repeat;
-  background-size: cover;
-  width: 100%;
+  height: 100%;
+  background: linear-gradient(20deg, rebeccapurple, transparent), url(https://grainy-gradients.vercel.app/noise.svg);   
+  filter: contrast(170%) brightness(1000%);
+}
+.overlaybg{
 
+    position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: moccasin;
+  mix-blend-mode: multiply;
 }
 a {
   color: inherit;
@@ -74,12 +93,21 @@ footer{
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
+.card{
+  background: #ffffff;
+  border-radius:10px;
+  display: inline-block;
+  width: 500px;
+  box-shadow: 0 1px 3 px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.12);
+  transition: all 0.3s cubic-bezier(.25,.8.25,1)
+}
+
 .card-content{
   justify-content:center;
   align-items:center
 }
 
-.post-card:hover{
+.card:hover{
   box-shadow: 0 14px 28px rgba(255,255,255,0.25), 0 10px 10px rgba(255,255,255,0.22);
 }
 
