@@ -1,109 +1,77 @@
 html,
 body {
-  padding: 0;
-  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  height: 100vh;
-    filter: contrast(220%) brightness(600%);
-
 }
+* { 
+    margin: 0;
+    padding: 0;
+}
+.bg{
+  height:100vh;
 
-.noise{
-  
   background: 
-	radial-gradient(circle at 6% 10%, rgba(23,197,184,1),transparent, rgba(205,0,243,1),transparent),
+	radial-gradient(circle at 88% 96%, rgba(255,95,0,1), rgba(15,216,92,0.01)),
+	radial-gradient(circle at 78% 91%, rgba(83,208,1,0), rgba(13,129,111,1)),
+  url("data:image/svg+xml,%3Csvg viewBox='0 0 314 314' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='5.81' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
   
-    url(https://grainy-gradients.vercel.app/noise.svg);
-  filter: contrast(170%) brightness(1000%);
-
-
+/* Container */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-
-pre {
-    font-family: monospace;
-    font-size: 16px;
-    width: 500px;
+/* Feed */
+.feed {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
 }
 
-/* Set the background color of the code block */
-pre code {
-    background-color: #f5f5f5;
+/* Tweet */
+.tweet {
+  display: flex;
+  margin-bottom: 10px;
 }
 
-/* Customize the styles of each language */
-.token.keyword {
-    color: #f44336; /* Set the color for JavaScript keywords */
+/* Avatar */
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #ccc;
+  overflow:hidden;
+  margin-right: 10px;
 }
-
-.token.function {
-    color: #2196f3; /* Set the color for Python function names */
-}
-
-.bg-noisy{
-  height: 100%;
-  background: linear-gradient(20deg, rebeccapurple, transparent), url(https://grainy-gradients.vercel.app/noise.svg);   
-  filter: contrast(170%) brightness(1000%);
-}
-.overlaybg{
-
-    position: absolute;
-  top: 0;
+.avatar img {
   width: 100%;
   height: 100%;
-  background: moccasin;
-  mix-blend-mode: multiply;
-}
-a {
-  color: inherit;
-  text-decoration: none;
+  object-fit: cover;
 }
 
-.content{
+/* Content */
+.content {
   display: flex;
-  margin-left: 4rem;
-  margin-right: 4rem;
-  flex: 1;
   flex-direction: column;
-  align-items: center;
-}
-
-footer{
-  background: lightblue;
-  display: flex;
-  flex: 1;
-  border-top: 1px solid #eaeaea;
   justify-content: center;
-  align-items: center;
-
 }
 
-.post-card{
-  background: #ffffff;
-  border-radius: 2px;
-  display: inline-block;
-  width: auto;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+/* Name */
+.name {
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
-.card{
-  background: #ffffff;
-  border-radius:10px;
-  display: inline-block;
-  width: 500px;
-  box-shadow: 0 1px 3 px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.12);
-  transition: all 0.3s cubic-bezier(.25,.8.25,1)
+/* Username */
+.username {
+  color: #555;
+  margin-bottom: 5px;
 }
 
-.card-content{
-  justify-content:center;
-  align-items:center
-}
-
-.card:hover{
-  box-shadow: 0 14px 28px rgba(255,255,255,0.25), 0 10px 10px rgba(255,255,255,0.22);
+/* Text */
+.text {
+  margin-bottom: 5px;
 }
 
 .navbar{
