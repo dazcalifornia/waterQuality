@@ -74,6 +74,32 @@ body {
   margin-bottom: 5px;
 }
 
+/* Responsive styles */
+@media screen and (max-width: 600px) {
+  /* Container */
+  .container {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  /* Feed */
+  .feed {
+    padding: 5px;
+  }
+
+  /* Tweet */
+  .tweet {
+    flex-direction: column;
+  }
+
+  /* Avatar */
+  .avatar {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+
 .navbar{
   background: blue;
   width:100%;
