@@ -1,4 +1,9 @@
 export default function Card(){
+  const data = `
+    function greet() {
+      console.log("Hello, world!");
+    }
+    `
   return (
       <div className="container">
       <div className="feed">
@@ -9,7 +14,16 @@ export default function Card(){
           <div className="content">
             <div className="name">Franx</div>
             <div className="username">@Alexis</div>
-            <div className="text">Test</div>
+            <div className="text">
+              <div className="code-box">
+                <pre>
+                  <code>
+                    {data}
+                  </code>
+                </pre>
+
+              </div>
+            </div>
           </div>
         </div>
       </div>
