@@ -11,7 +11,12 @@ export default function Home() {
       </Head>
         <section>
          <h1>Post Update</h1>
-        <div className='content'>
+        <div className='content'>  
+          <div className="input-bar">
+            <input type="text" placeholder="What's happening?"/>
+            <button>Tweet</button>
+          </div>
+
           <Card/>
         </div>
 

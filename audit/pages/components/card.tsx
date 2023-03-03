@@ -1,4 +1,10 @@
+import {useEffect, useState} from'react'
+
+
 export default function Card(){
+
+  const [post, setPost] = useState([])
+
   const data = `
     function greet() {
       console.log("Hello, world!");
