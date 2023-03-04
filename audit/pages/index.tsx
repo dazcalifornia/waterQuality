@@ -12,22 +12,22 @@ export default function Home() {
   const pb = new PocketBase('http://127.0.0.1:8090');
   const collection = pb.collection('posts');
 
-  const addData = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('text', data);
-      formData.append('image', file);
-      const record = await pb.collection('posts').create(formData);
-      alert('Data added successfully!');
-      setData('');
-      setFile(null);
-      console.log(record);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+//  const addData = async () => {
+//    try {
+//      const formData = new FormData();
+//      formData.append('text', data);
+//      formData.append('image', file);
+//      const record = await pb.collection('posts').create(formData);
+//      alert('Data added successfully!');
+//      setData('');
+//      setFile(null);
+//      console.log(record);
+//    } catch (error) {
+//      console.error(error);
+//    }
+//  };
 
-  const handleFileInputChange = (event) => {
+  const handleFileInputChange = (event:any) => {
     setFile(event.target.files[0]);
   };
 
@@ -43,7 +43,7 @@ export default function Home() {
  //   };
  //   fetchData();
  // }, []);
-    const getImageUrl = (post) => {
+    const getImageUrl = (post:any) => {
     if (!post.image) {
       return null;
     }
