@@ -1,7 +1,7 @@
 import {useEffect, useState} from'react'
 
 
-export default function Card({post}){
+export default function Card({post}:any){
   console.log('post:',post)
 //  const data = `
 //    function greet() {
@@ -18,7 +18,7 @@ export default function Card({post}){
             <div className="username">@Alexis</div>
             <div className="text">
               {post.text}
-             {post.image.map((imageUrl, index) => (
+             {post.image.map((imageUrl:any, index:any) => (
               <img key={index} src={imageUrl} alt={`Image ${index + 1}`} />
             ))}
             </div>
