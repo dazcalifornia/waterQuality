@@ -43,9 +43,9 @@ body {
 
 .activity-card {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: 10px;
-  border-left: 3px solid #ccc;
+  position: relative;
 }
 
 .activity-card .circle {
@@ -54,11 +54,23 @@ body {
   border-radius: 50%;
   background-color: #ccc;
   margin-right: 10px;
+  margin-left: -1px;
+}
+
+.activity-card .line {
+  position: absolute;
+  left: 12px;
+  top: 20px;
+  bottom: 0;
+  width: 3px;
+  background-color: #ccc;
 }
 
 .activity-card h3 {
   margin: 0;
   font-size: 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .activity-card p {
@@ -66,8 +78,6 @@ body {
   font-size: 14px;
   color: #666;
 }
-
-
 
 
 .production-card {
@@ -115,3 +125,63 @@ body {
   margin-top: 8px;
 }
 
+
+@media only screen and (max-width: 767px) {
+  .row {
+    flex-direction: column;
+  }
+  
+  .column {
+    max-width: 100%;
+    min-width: 0;
+    margin-bottom: 20px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .activity-card {
+    padding: 5px;
+  }
+  
+  .activity-card .circle {
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    margin-left: -1.6px;
+  }
+  
+  .activity-card .line {
+    left: 6px;
+    top: 14px;
+    height: calc(100% - 16px);
+  }
+  
+  .activity-card h3 {
+    font-size: 14px;
+  }
+  
+  .activity-card p {
+    font-size: 12px;
+  }
+  
+  .production-card {
+    padding: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  .status-pill {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+  
+  .description {
+    font-size: 12px;
+  }
+  
+  .date {
+    font-size: 10px;
+  }
+}
