@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: Arial, sans-serif;
+			background-color: #f5f5f5;
+		}
+
+		.container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+
+		.card {
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 10px;
+			box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			max-width: 400px;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.card input[type="text"], .card input[type="file"] {
+			width: 100%;
+			margin-bottom: 10px;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			box-sizing: border-box;
+		}
+
+		.card input[type="file"] {
+			padding: 0;
+			height: 0;
+			opacity: 0;
+			overflow: hidden;
+			position: absolute;
+			z-index: -1;
+		}
+
+		.card label {
+			background-color: #4CAF50;
+			color: #fff;
+			cursor: pointer;
+			padding: 10px;
+			border-radius: 5px;
+			font-size: 14px;
+			transition: background-color 0.3s ease;
+		}
+
+		.card label:hover {
+			background-color: #3e8e41;
+		}
+
+		.card button {
+			background-color: #4CAF50;
+			color: #fff;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			font-size: 16px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		.card button:hover {
+			background-color: #3e8e41;
+		}
+
+		.card img {
+			max-width: 100%;
+			margin-bottom: 10px;
+		}
+
+		.error {
+			color: red;
+			font-size: 12px;
+			margin-top: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="card">
+			<h2>Upload Data</h2>
+			<form id="upload-form">
+				<input type="text" id="title-input" placeholder="Title">
+				<input type="file" id="image-upload">
+				<label for="image-upload">Choose Image</label>
+				<img id="preview-image" src="" alt="" />
+				<button type="submit">Send</button>
+			</form>
+			<div class="error"></div>
+		</div>
+	</div>
+
+	<script>
+		const form = document.getElementById("upload-form");
+		const error = document.querySelector(".error");
+
+		form.addEventListener("submit", async function(event) {
+			event.preventDefault();
+
+			const title = document.getElementById("title-input").value;
+			const image = document.getElementById("image-upload").files[0];
+
+			if (!title) {
+				error.textContent = "Please enter a title.";
+				return;
+			}
+
+			if (!image) {
+				error.textContent = "Please choose an image.";
+				return;
+			}
+
+			const formData = new FormData();
+			formData.append("title", title);
+			formData.append("image", image);
+
+			try {
+				const response = await fetch("/api/upload", {
+					method: "POST",
+					body: formData
+				});
+
+				if (response.ok) {
+					window.location.href = "/input";
+				} else {
+					const data = await response.json();
+					error.textContent = data.message;
+				}
+			} catch (error) {
+				error.textContent = "An error occurred while uploading the data.";
+			}
+		});
+
+		const imageUpload = document.getElementById("image-upload");
+		const previewImage = document.getElementById("preview-image");
+
+		imageUpload.addEventListener("change", function() {
+			const file = this.files[0];
+			const reader = new FileReader();
+
+			reader.addEventListener("load", function() {
+				previewImage.setAttribute("src", this.result);
+			});
+
+			reader.readAsDataURL(file);
+		});
+	</script>
+</body>
+</html>
+
