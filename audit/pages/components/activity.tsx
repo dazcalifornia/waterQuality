@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ActivityCard = (props:{title:String,description:String,date:String}) => {
+const ActivityCard = (props:{title:string,description:string,date:string}) => {
   const {title,description,date} = props;
   return (
    <div className="activity-card">
