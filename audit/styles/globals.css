@@ -2,20 +2,14 @@ html,
 body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background: #1c1c1c;
 }
 * { 
     margin: 0;
     padding: 0;
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
-.bg{
-  height:100vh;
-  background-attachment: fixed;
-  background: 
-	radial-gradient(circle at 88% 96%, rgba(255,95,0,1), rgba(15,216,92,0.01)),
-	radial-gradient(circle at 78% 91%, rgba(83,208,1,0), rgba(13,129,111,1)),
-  url("data:image/svg+xml,%3Csvg viewBox='0 0 314 314' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='5.81' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
+
 .feed-container{
   height:100%;
   overflow-y:auto;
@@ -23,7 +17,7 @@ body {
   
 /* Container */
 .container {
-  max-width: 600px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -33,11 +27,12 @@ body {
   border-radius: 10px;
   padding: 10px;
   margin-top:40px;
+  background:white;
 }
 
 /* Tweet */
 .tweet {
-  display: flex;
+
   margin-bottom: 10px;
 }
 
@@ -63,6 +58,7 @@ body {
   justify-content: center;
   overflow: auto;
 }
+
 
 /* Name */
 .name {
@@ -179,3 +175,61 @@ body {
   background-color: #0c8de4;
 }
 
+
+.column {
+			box-sizing: border-box;
+			padding: 10px;
+			flex: 1;
+			max-width: 33.33%;
+			min-width: 300px;
+		}
+		.left-column {
+			flex: 2;
+			max-width: 66.66%;
+			min-width: 600px;
+		}
+		.card {
+			background-color: #f2f2f2;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			padding: 20px;
+      margin: 10px;
+			margin-bottom: 20px;
+			overflow-y: auto;
+			max-height: 200px;
+		}
+      	.card::-webkit-scrollbar {
+    		width: 0px;
+    		background: transparent; 
+		}
+		.row {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0 -10px;
+		}
+
+.activity-card {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-left: 3px solid #ccc;
+}
+
+.activity-card .circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ccc;
+  margin-right: 10px;
+}
+
+.activity-card h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.activity-card p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: #666;
+}

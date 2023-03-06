@@ -1,31 +1,23 @@
+import post from '../../data.json'
 import {useEffect, useState} from'react'
+import StatusCard from './status'
 
-
-export default function Card({post}:any){
-  console.log('post:',post)
-//  const data = `
-//    function greet() {
-//      console.log("Hello, world!");
-//    }
-//    `
+export default function Card(){
   return (
       <div className="container">
-      <div className="feed">
-        <div className="tweet">
-         
-          <div className="content">
-            <div className="name">Franx</div>
-            <div className="username">@Alexis</div>
-            <div className="text">
-              {post.text}
-             {post.image.map((imageUrl:any, index:any) => (
-              <img key={index} src={imageUrl} alt={`Image ${index + 1}`} />
-            ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> 
+       <div className="feed">
+         <div className='avatar'></div>
+         <div className="tweet">
+           <h1>Activity in order</h1>
+           <StatusCard status="Active"/>
+           <div className="content">
+             <div className="text">
+
+             </div>          
+           </div>
+         </div>
+       </div>
+     </div> 
   )
 }
 
