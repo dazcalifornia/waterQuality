@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import Card from './components/card';
 import StatusCard from './components/status';
 import ActivityCard from './components/activity';
+import ProductionCard from './components/production';
 
 export default function Home() {
 
@@ -18,7 +19,7 @@ export default function Home() {
       </Head>
 <div className="row">
 		<div className="column left-column card">
-				<Card/>
+          <ProductionCard title="Production" description="descriptione" status="inactive" date="11/11/1111"/>
       </div>
 		<div className="column card">
         <ActivityCard title="Activity" description="Description" date="Date"/>
@@ -27,9 +28,7 @@ export default function Home() {
 			<Card/> 
 		</div>
 	</div>
-      <section className='feed-container'>
-        
-      </section>
+      
     </div>
   );
 }
