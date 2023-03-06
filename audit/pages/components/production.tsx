@@ -2,7 +2,16 @@ import React from 'react';
 
 const ProductionCard = (props:{ title:string, description:string, status:string, date:string }) => {
   const {title,description,status,date} = props;
-  const statusColors = {
+type StatusColors = {
+  [key: string]: string;
+  active: string;
+  inprogress: string;
+  pending: string;
+  done: string;
+  inactive: string;
+};
+
+const statusColors: StatusColors = {
   active: '#06C755',
   inprogress: '#FFD200',
   pending: '#FF9100',
