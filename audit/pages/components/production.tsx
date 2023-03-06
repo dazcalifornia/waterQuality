@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProductionCard = (props:{ title:any, description:any, status:any, date:any }) => {
+const ProductionCard = (props:{ title:String, description:String, status:String, date:String }) => {
   const {title,description,status,date} = props;
   const statusColors = {
   active: '#06C755',
