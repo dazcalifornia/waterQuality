@@ -1,4 +1,3 @@
-import post from '../../data.json'
 import {useEffect, useState} from'react'
 import StatusCard from './status'
 
