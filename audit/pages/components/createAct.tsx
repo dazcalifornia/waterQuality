@@ -40,41 +40,22 @@ export default function CreateActivity() {
   };
 
   return (
-    <div className="create-activity-container">
+   <div className="update-card">
       <h2>Create Activity</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Title</label>
-          <input
-            type="text"
-            placeholder="Enter title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
+          <input type="text" placeholder="Enter title" className="update-input" onChange={(e) => setTitle(e.target.value)} required />
         </div>
         <div className="form-group">
           <label>Description</label>
-          <textarea
-            placeholder="Enter description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
+          <textarea placeholder="Enter description" className="update-input" onChange={(e) => setDescription(e.target.value)} required></textarea>
         </div>
         <div className="form-group">
           <label>Date</label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-          />
+          <input type="date" className="update-input" onChange={(e) => setDate(e.target.value)} required/>
         </div>
-        {error && <div className="error">{error}</div>}
-        <button type="submit" disabled={loading}>
-          Create
-        </button>
+        <button type="submit" className="submit-btn">Create Activity</button>
       </form>
     </div>
   );

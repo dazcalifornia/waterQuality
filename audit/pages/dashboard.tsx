@@ -35,16 +35,15 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
+      <div className="headerdashboard">
       <h2>Dashboard</h2>
-      <div className="user-info">
-        <div className="info">
+      <div className="userData">
           <p>{userData?.username}</p>
           <p>{userData?.email}</p>
-        </div>
       </div>
-      <button onClick={handleLogout}>Logout</button>
-
-      <CreateActivity />
+      <button className="logout-button" onClick={handleLogout}>Logout</button>
+      </div>
+        <CreateActivity />
     </div>
   );
 }
