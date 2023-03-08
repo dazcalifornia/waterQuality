@@ -21,7 +21,7 @@ export default function Dashboard() {
     if (!pb.authStore.isValid) {
       router.push("/login");
     } else {
-      const userId = pb.authStore.model?.id;
+      const userId = pb.authStore.model?.id?? '';
       pb.collection("users")
         .getOne(userId)
         .then((user) => {
