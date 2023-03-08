@@ -16,9 +16,15 @@ export default function TodoList() {
   useEffect(() => {
     pb.collection("todo")
       .getFullList(200, { sort: "-created" })
-      .then((list: Todo[]) => { // Annotate the type of list as Todo[]
-        setTodos(list);
-        console.log(list)
+      .then((list) => {
+        const todos = list.map((record) => {
+          return {
+            id: record.id,
+            task: record.task,
+            created: record.created,
+          } as Todo;
+        });
+        setTodos(todos);
       })
       .catch((error) => {
         console.error(error);
