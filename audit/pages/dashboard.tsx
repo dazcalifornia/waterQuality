@@ -7,12 +7,17 @@ import AddTodo from "./components/createTodo";
 
 const pb = new PocketBase("http://127.0.0.1:8090");
 
+type User = {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export default function Dashboard() {
   const router = useRouter();
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<User | null>(null);
 
-
-   useEffect(() => {
+  useEffect(() => {
     if (!pb.authStore.isValid) {
       router.push("/login");
     } else {
@@ -20,7 +25,12 @@ export default function Dashboard() {
       pb.collection("users")
         .getOne(userId)
         .then((user) => {
-          setUserData(user);
+          const userData: User = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+          };
+          setUserData(userData);
         })
         .catch((error) => {
           console.error(error);
@@ -38,16 +48,16 @@ export default function Dashboard() {
   return (
     <div className="dashboard-container">
       <div className="headerdashboard">
-      <h2>Dashboard</h2>
-      <div className="userData">
-          <p>{userData?.username}</p>
+        <h2>Dashboard</h2>
+        <div className="userData">
+          <p>{userData?.name}</p>
           <p>{userData?.email}</p>
+        </div>
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
-      <button className="logout-button" onClick={handleLogout}>Logout</button>
-      </div>
-        <CreateProduction />
-        <CreateActivity />
-        <AddTodo/>
+      <CreateProduction />
+      <CreateActivity />
+      <AddTodo/>
     </div>
   );
 }
