@@ -13,11 +13,11 @@ export default function CreateProduction() {
 
 
 
-  const handleStatusChange = (event) => {
+  const handleStatusChange = (event:any) => {
     setStatus(event.target.value);
   }
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event:any) => {
     event.preventDefault();
 
     setLoading(true);

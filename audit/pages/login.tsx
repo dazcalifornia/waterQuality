@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import PocketBase from 'pocketbase';
 import { useRouter } from 'next/router';
 
@@ -10,6 +10,12 @@ export default function Login() {
   const router = useRouter();
 
   const pb = new PocketBase('http://127.0.0.1:8090');
+
+  useEffect(() => {
+    if (pb.authStore.isValid) {
+      router.push('/dashboard');
+    }
+  }, []);
 
   const handleSubmit = async (event:any) => {
     event.preventDefault();

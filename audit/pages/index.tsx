@@ -6,6 +6,7 @@ import Card from './components/card';
 import StatusCard from './components/status';
 import ActivityCard from './components/activity';
 import ProductionCard from './components/production';
+import TodoList from './components/todoCard';
 
 export default function Home() {
 
@@ -72,7 +73,7 @@ export default function Home() {
           ))}
         </div>
 	      	<div className="column card">
-	      		<Card/> 
+            <TodoList />
 	      	</div>
 	      </div>
     </div>

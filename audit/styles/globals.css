@@ -29,7 +29,7 @@ body {
       margin: 10px;
 			margin-bottom: 20px;
 			overflow-y: auto;
-			max-height: 200px;
+			max-height: 900px;
 		}
       	.card::-webkit-scrollbar {
     		width: 0px;
@@ -38,7 +38,8 @@ body {
 		.row {
 			display: flex;
 			flex-wrap: wrap;
-			margin: 0 -10px;
+			margin: 10px 20px;
+
 		}
 
 .activity-card {

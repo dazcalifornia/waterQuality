@@ -121,3 +121,42 @@
   border: 1px solid #ccc;
 }
 
+.todo-list {
+  margin: 0 auto;
+  max-width: 600px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.todo-list h2 {
+  margin: 0 0 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+}
+
+.todo-item:last-child {
+  border-bottom: none;
+}
+
+.todo-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.todo-desc {
+  margin: 0 20px;
+  flex-grow: 1;
+  font-size: 16px;
+}
+
+.todo-status {
+  font-size: 16px;
+}
