@@ -11,18 +11,40 @@ export default function Home() {
 
   //fetch ACtivity Data 
   const [activityData, setActivityData] = useState(null);
+  const [productionData, setProductionData] = useState(null);
 
   useEffect(() => {
     const pb = new PocketBase("http://127.0.0.1:8090");
     const actRec = pb.collection("activity").getFullList(200,{
       sort: '-created'
     }).then((act) => {
-      setActivityData(act);
+      const formattedActivities = act.map((activity) => {
+        const date = new Date(activity.date);
+        const formattedDate = date.toLocaleDateString();
+        return { ...activity, date: formattedDate };
+      });
+      setActivityData(formattedActivities);
     }).catch((error) => {
       console.error(error);
       // handle error
       setActivityData(error);
     });
+    const prodRec = pb.collection("productions").getFullList(200,{
+      sort: '-created'
+    }).then((prod) => {
+      const formattedProductions = prod.map((production) => {
+        const date = new Date(production.date);
+        const formattedDate = date.toLocaleDateString();
+        return { ...production, date: formattedDate };
+      });
+      setProductionData(formattedProductions);
+    }).catch((error) => {
+      console.error(error);
+      // handle error
+      setProductionData(error);
+    });
+
+
   }, []);
 
   return (
@@ -35,7 +57,13 @@ export default function Home() {
       </Head>
       <div className="row">
 	      <div className="column left-column card">
-          <ProductionCard title="Production" description="descriptione" status="inactive" date="11/11/1111"/>
+          {productionData?.map((production) => (
+            <ProductionCard
+            title={production.title} 
+            description={production.desc} 
+            status={production.status}
+            date={production.date}/>
+          ))}
 
         </div>
         <div className="column card">

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PocketBase from "pocketbase";
 import { useRouter } from "next/router";
 import CreateActivity from "./components/createAct";
+import CreateProduction from "./components/createProduction";
 
 const pb = new PocketBase("http://127.0.0.1:8090");
 
@@ -43,6 +44,7 @@ export default function Dashboard() {
       </div>
       <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
+        <CreateProduction />
         <CreateActivity />
     </div>
   );

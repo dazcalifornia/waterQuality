@@ -11,7 +11,7 @@ export default function Login() {
 
   const pb = new PocketBase('http://127.0.0.1:8090');
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event:any) => {
     event.preventDefault();
 
     try {
