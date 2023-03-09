@@ -26,7 +26,7 @@ export default function Home() {
   const [productionData, setProductionData] = useState<Production[]>([]);
 
   useEffect(() => {
-    const pb = new PocketBase('http://127.0.0.1:8090');
+    const pb = new PocketBase('https://3c18-45-136-254-11.ap.ngrok.io');
     const actRec = pb
       .collection('activity')
       .getFullList(200, {
