@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import { 
   PageLayout,
   TabNav,
@@ -7,8 +8,11 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Footer from '../components/Footer'
 import Nav from '../components/Nav'
+import Contents from '../components/Contents'
+
 
 const Home: NextPage = () => {
+  const [selectedTab, setSelectedTab] = useState('home')
   return (
     <div>
       <Head>
@@ -18,10 +22,10 @@ const Home: NextPage = () => {
       </Head>
       <PageLayout>
         <PageLayout.Header>
-          <Nav />
+          <Nav setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
         </PageLayout.Header>
         <PageLayout.Content>
-          <Box sx={{borderWidth: 1, borderStyle: 'solid', borderColor: 'border.default', p: 3,borderRadius:10}}>Hello</Box>
+          <Contents selectedTab={selectedTab} />
         </PageLayout.Content>
         <PageLayout.Pane>
           <Box sx={{borderWidth: 1, borderStyle: 'solid', borderColor: 'border.default', p: 3,borderRadius:10}}>Pane</Box>
