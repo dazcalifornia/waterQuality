@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PocketBase from "pocketbase";
 
-const pb = new PocketBase("https://3c18-45-136-254-11.ap.ngrok.io");
+const pb = new PocketBase("https://4dd8-45-136-254-11.ap.ngrok.io/");
 
 export default function AddTodo() {
   const [task, setTask] = useState("");

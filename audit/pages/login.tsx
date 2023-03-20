@@ -9,7 +9,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const pb = new PocketBase('https://3c18-45-136-254-11.ap.ngrok.io');
+  const pb = new PocketBase('https://4dd8-45-136-254-11.ap.ngrok.io');
 
   useEffect(() => {
     if (pb.authStore.isValid) {
