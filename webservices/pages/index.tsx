@@ -16,7 +16,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>waterData insight=>{selectedTab}</title>
+        <title>waterData insight :{selectedTab}</title>
         <meta name="description" content="webpage show water quality" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
