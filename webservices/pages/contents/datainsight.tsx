@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import csvtojson from "csvtojson";
-import fs from "fs-extra";
 
 interface SalinityData {
   labels: string[];
@@ -22,11 +21,12 @@ export default function DataInsights() {
 
   useEffect(() => {
     const getSalinity = async () => {
-      const csvData = await fs.readFile("../../data/salinity.csv", "utf-8");
-      const response = await csvtojson().fromString(csvData);
+      const response = await fetch("../../data/salinity.csv");
+      const csvData = await response.text();
+      const jsonData = await csvtojson().fromString(csvData);
 
-      const salinityLabels = response.map((row) => row["Datetime"]);
-      const salinityData = response.map((row) => row["Salinity (PSU)"]);
+      const salinityLabels = jsonData.map((row) => row["Datetime"]);
+      const salinityData = jsonData.map((row) => row["Salinity (PSU)"]);
 
       setSalinity({
         labels: salinityLabels,
@@ -51,4 +51,3 @@ export default function DataInsights() {
     </div>
   );
 }
-

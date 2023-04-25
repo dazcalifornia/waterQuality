@@ -25,20 +25,79 @@ class InputData(BaseModel):
     DO_saturation: float
     Chlorophyll: float
 
+# Read combined csv file
+df = pd.read_csv('./data/corrective.csv', index_col='Datetime')
+
+# Split dataframe into separate dataframes based on column names
+salinity_df = df[['Salinity (PSU)']]
+conductivity_df = df[['Conductivity (mS/cm)']]
+ph_df = df[['pH']]
+turbidity_df = df[['Turbidity (FTU)']]
+sea_temp_df = df[['Sea temperature (°C)']]
+do_saturation_df = df[['DO saturation (%)']]
+chlorophyll_df = df[['Chlorophyll-a (ppb)']]
+
+# Resample data to daily frequency
+salinity_daily = salinity_df.resample('D').mean()
+conductivity_daily = conductivity_df.resample('D').mean()
+ph_daily = ph_df.resample('D').mean()
+turbidity_daily = turbidity_df.resample('D').mean()
+sea_temp_daily = sea_temp_df.resample('D').mean()
+do_saturation_daily = do_saturation_df.resample('D').mean()
+chlorophyll_daily = chlorophyll_df.resample('D').mean()
+
+# Combine resampled data into a single dictionary
+output_data = {
+    'salinity': salinity_daily.to_dict('records'),
+    'conductivity': conductivity_daily.to_dict('records'),
+    'ph': ph_daily.to_dict('records'),
+    'turbidity': turbidity_daily.to_dict('records'),
+    'sea_temp': sea_temp_daily.to_dict('records'),
+    'do_saturation': do_saturation_daily.to_dict('records'),
+    'chlorophyll': chlorophyll_daily.to_dict('records')
+}
+
+# Define endpoint to return resampled data as JSON
+@app.get('/resampled-data')
+async def get_resampled_data():
+    return JSONResponse(content=output_data)
 
 
+@app.get('/data')
+async def get_data():
+    # Define the file names and columns for each CSV file
+    files = [
+        {'name': 'cholorophy.csv', 'columns': ['Datetime', 'Chlorophyll-a (ppb)']},
+        {'name': 'conduct.csv', 'columns': ['Datetime', 'Conductivity (mS/cm)']},
+        {'name': 'DoSturation.csv', 'columns': ['Datetime', 'DO saturation (%)']},
+        {'name': 'salinity.csv', 'columns': ['Datetime', 'Salinity (PSU)']},
+        {'name': 'seaTemp.csv', 'columns': ['Datetime', 'Sea temperature (°C)']},
+        {'name': 'turbidity.csv', 'columns': ['Datetime', 'Turbidity (FTU)']},
+    ]
 
-@app.get("/data/")
-async def read_csv_files():
-    folder_path = "./data"
-    csv_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
-    df = pd.concat((pd.read_csv(os.path.join(folder_path, f)) for f in csv_files))
-    data = df.to_dict('records')
-    return JSONResponse(content=data)
+    # Read the CSV files and combine them into a single DataFrame
+    dfs = []
+    for file in files:
+        file_path = os.path.join('./data', file['name'])
+        df = pd.read_csv(file_path, usecols=file['columns'])
+        dfs.append(df)
+    data_df = pd.concat(dfs, axis=1)
+
+    # Convert the Datetime column to a datetime object and set it as the index
+    data_df['Datetime'] = pd.to_datetime(data_df['Datetime'], format='%Y-%m-%d %H:%M:%S')
+    data_df.set_index('Datetime', inplace=True)
+
+    # Resample the data to daily frequency
+    data_df_daily = data_df.resample('D').mean()
+
+    # Convert the data to a JSON response
+    output_data = data_df_daily.to_dict('index')
+    return output_data
+
 
 
 @app.post('/predict')
-async def predict(request: Request, file: UploadFile = File(...)):
+async def predict(request: Request):
     # Read input file
     input_df = pd.read_csv(file.file)
 
