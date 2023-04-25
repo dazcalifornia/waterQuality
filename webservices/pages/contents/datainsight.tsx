@@ -38,6 +38,41 @@ export default function DataInsights() {
             backgroundColor: "rgb(75, 192, 192)",
             borderColor: "rgba(75, 192, 192, 0.2)",
           },
+          {
+              label: "conductivity",
+              data: [1,2,3,4,5,6,7,8,9,10],
+              fill: false,
+              backgroundColor: "rgb(75, 192, 192)",
+              borderColor: "rgba(75, 192, 192, 0.2)",
+          },
+          {
+              label: "Turbitity",
+              data: [1,2,3,4,5,6,7,8,9,10],
+              fill: false,
+              backgroundColor: "rgb(75, 192, 192)",
+              borderColor: "rgba(75, 192, 192, 0.2)",
+          },
+          {
+              label: "sea temperature",
+              data: [1,2,3,4,5,6,7,8,9,10],
+              fill: false,
+              backgroundColor: "rgb(75, 192, 192)",
+              borderColor: "rgba(75, 192, 192, 0.2)",
+          },
+          {
+              label: "DO saturation",
+              data: [1,2,3,4,5,6,7,8,9,10],
+              fill: false,
+              backgroundColor: "rgb(75, 192, 192)",
+              borderColor: "rgba(75, 192, 192, 0.2)",
+          },
+          {
+              label: "Chlorophyll",
+              data: [1,2,3,4,5,6,7,8,9,10],
+              fill: false,
+              backgroundColor: "rgb(75, 192, 192)",
+              borderColor: "rgba(75, 192, 192, 0.2)",
+            },
         ],
       });
     };

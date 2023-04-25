@@ -94,7 +94,18 @@ async def get_data():
     output_data = data_df_daily.to_dict('index')
     return output_data
 
-
+@app.get("/salinity")
+async def get_salinity():
+     # Load the csv file as a pandas dataframe
+    salinity_df = pd.read_csv("salinity.csv")
+    # Convert the date column to datetime format
+    salinity_df['Datetime'] = pd.to_datetime(salinity_df['Datetime'])
+    # Set the date column as the index
+    salinity_df.set_index('Datetime', inplace=True)
+    # Resample by day and take the mean value of each day
+    salinity_daily = salinity_df.resample('D').mean()
+    # Convert dataframe to JSON and return
+    return JSONResponse(content=salinity_daily.to_json(orient="columns"))
 
 @app.post('/predict')
 async def predict(request: Request):
