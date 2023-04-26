@@ -34,7 +34,7 @@ const Home: NextPage = () => {
         <PageLayout.Pane>
           <Box sx={{borderWidth: 1, borderStyle: 'solid', borderColor: 'border.default', p: 3,borderRadius:10}}>
             <p>
-              visual data with grpah this is a water quality data from Jan to Jul
+                show water quality data from datacenter and data from north bongkot 
             </p>
           </Box>
         </PageLayout.Pane>

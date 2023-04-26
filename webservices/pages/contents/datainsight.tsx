@@ -110,7 +110,7 @@ export default function DataInsights() {
       1614445200000],
     datasets: [
       {
-        date:[4.0034122254,5.338160673,4.0803293742,5.4108992605,32.0923479164,5.102232152,5.7382354159,2.5816909941,2.0973558323,2.3401305772,4.2582764581,1.5262167326,2.0061949594,2.1823239854],
+        data:[4.0034122254,5.338160673,4.0803293742,5.4108992605,32.0923479164,5.102232152,5.7382354159,2.5816909941,2.0973558323,2.3401305772,4.2582764581,1.5262167326,2.0061949594,2.1823239854],
         label: 'Turbidity',
         borderColor: '#3cba9f',
         fill: false
@@ -219,6 +219,13 @@ export default function DataInsights() {
   return (
     <div>
       <h1>Data</h1>
+      
+      <p>
+        actually this page will gonna have a function 
+        to select data to predict for the next 7 days 
+        but cannot integrate with the api yet so i just
+        put the data here
+      </p>
       <Line data={salinity} width={200} height={100} options={options} />
       <Line data={conduct} width={200} height={100} options={options} />
       <Line data={turbidity} width={200} height={100} options={options} />
