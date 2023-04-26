@@ -1,19 +1,23 @@
 import {useState} from 'react'
 import { 
   PageLayout,
-  TabNav,
-  Box
+  Box,
+  ThemeProvider,
 } from '@primer/react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Footer from '../components/Footer'
 import Nav from '../components/Nav'
 import Contents from '../components/Contents'
+import deepmerge from 'deepmerge'
+
+
 
 
 const Home: NextPage = () => {
   const [selectedTab, setSelectedTab] = useState('home')
   return (
+    <ThemeProvider >
     <div>
       <Head>
         <title>waterData insight :{selectedTab}</title>
@@ -40,7 +44,9 @@ const Home: NextPage = () => {
       </PageLayout>
       
     </div>
+    </ThemeProvider>
   )
 }
+
 
 export default Home
