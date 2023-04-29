@@ -1,11 +1,10 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+import mysql.connector
 
 from pydantic import BaseModel
 import pandas as pd
-import pickle
-import os
 import json
 
 
@@ -24,6 +23,44 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+db_config = {
+        'host': 'localhost',
+        'user': 'root',
+        'password': '',
+        'database': 'dashboard'
+    }
+
+
+
+@app.get("/db")
+async def get_db():
+    db = mysql.connector.connect(**db_config)
+    query = "SELECT * FROM `WaterData`"
+    df = pd.read_sql(query, con=db)
+    db.close()
+    
+    # convert to datetime
+    df['Datetime'] = pd.to_datetime(df['Datetime'])
+    
+    # set index to Datetime
+    df.set_index('Datetime', inplace=True)
+    
+    # resample to monthly frequency
+    df_monthly = df.resample('M').mean()
+    
+    data = {}
+    data['Datetime'] = df_monthly.index.strftime('%Y-%m-%d').tolist()
+    data['Salinity'] = df_monthly['Salinity_PSU'].tolist()
+    data['Conductivity'] = df_monthly['Conductivity_mScm'].tolist()
+    data['Turbidity'] = df_monthly['Turbidity_FTU'].tolist()
+    data['SeaTemp'] = df_monthly['Sea_temperature_°C'].tolist()
+    data['DO'] = df_monthly['DO_saturation_'].tolist()
+    data['chlorophyll'] = df_monthly['Chlorophylla_ppb'].tolist()
+
+
+    return JSONResponse(content=data)
+
 
 
 @app.get("/salinity")
