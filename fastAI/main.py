@@ -6,6 +6,7 @@ import mysql.connector
 from pydantic import BaseModel
 import pandas as pd
 import json
+import pickle 
 
 
 app = FastAPI()
@@ -25,13 +26,17 @@ app.add_middleware(
 )
 
 db_config = {
-        'host': 'localhost',
-        'user': 'root',
-        'password': '',
-        'database': 'dashboard'
-    }
+    'host': 'localhost',
+    'user': 'root',
+    'password': '',
+    'database': 'dashboard'
+}
 
-
+salinity_model = pickle.load(open('./models/salinity_model.pkl', 'rb'))
+turbidity_model = pickle.load(open('./models/turbidity_model.pkl', 'rb'))
+sea_temp_model = pickle.load(open('./models/sea_temp_model.pkl', 'rb'))
+do_saturation_model = pickle.load(open('./models/do_saturation_model.pkl', 'rb'))
+chlorophyll_model = pickle.load(open('./models/chlorophyll_model.pkl', 'rb'))
 
 @app.get("/db")
 async def get_db():
@@ -89,7 +94,7 @@ async def get_salinity():
 
 
 @app.post('/predict')
-async def predict(request: Request):
+async def predict(request: Request, file: UploadFile = File(...)):
     # Read input file
     input_df = pd.read_csv(file.file)
 
@@ -120,4 +125,48 @@ async def predict(request: Request):
 
     # Return predicted values as JSON response
     return JSONResponse(content=output_data)
+
+@app.get('/selective_data')
+async def selective_data(start_datetime: str, end_datetime: str):
+    # Connect to the MySQL database
+    db = mysql.connector.connect(**db_config)
+
+    # Get the data for each variable within the datetime range
+    query = "SELECT Datetime, Salinity_PSU FROM WaterData WHERE Datetime >= '{}' AND Datetime <= '{}'"
+    salinity_query = query.format(start_datetime, end_datetime)
+    salinity_df = pd.read_sql(salinity_query, con=db)
+    salinity_df.set_index('Datetime', inplace=True)
+
+    query = "SELECT Datetime, Turbidity_FTU FROM WaterData WHERE Datetime >= '{}' AND Datetime <= '{}'"
+    turbidity_query = query.format(start_datetime, end_datetime)
+    turbidity_df = pd.read_sql(turbidity_query, con=db)
+    turbidity_df.set_index('Datetime', inplace=True)
+
+    query = "SELECT Datetime, Sea_temperature_°C FROM WaterData WHERE Datetime >= '{}' AND Datetime <= '{}'"
+    sea_temp_query = query.format(start_datetime, end_datetime)
+    sea_temp_df = pd.read_sql(sea_temp_query, con=db)
+    sea_temp_df.set_index('Datetime', inplace=True)
+
+    query = "SELECT Datetime, DO_saturation_ FROM WaterData WHERE Datetime >= '{}' AND Datetime <= '{}'"
+    do_saturation_query = query.format(start_datetime, end_datetime)
+    do_saturation_df = pd.read_sql(do_saturation_query, con=db)
+    do_saturation_df.set_index('Datetime', inplace=True)
+
+    query = "SELECT Datetime, Chlorophylla_ppb FROM WaterData WHERE Datetime >= '{}' AND Datetime <= '{}'"
+    chlorophyll_query = query.format(start_datetime, end_datetime)
+    chlorophyll_df = pd.read_sql(chlorophyll_query, con=db)
+    chlorophyll_df.set_index('Datetime', inplace=True)
+
+    # Combine the dataframes into a single dictionary
+    output_data = {
+        'salinity': salinity_df.to_dict(),
+        'turbidity': turbidity_df.to_dict(),
+        'sea_temp': sea_temp_df.to_dict(),
+        'do_saturation': do_saturation_df.to_dict(),
+        'chlorophyll': chlorophyll_df.to_dict()
+    }
+
+    # Return data as JSON response
+    return JSONResponse(content=output_data)
+
 
