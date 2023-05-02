@@ -93,39 +93,6 @@ async def get_salinity():
     return {'datetime': datetime_list, 'salinity': salinity_list, 'index_dtype': index_dtype}
 
 
-@app.post('/predict')
-async def predict(request: Request, file: UploadFile = File(...)):
-    # Read input file
-    input_df = pd.read_csv(file.file)
-
-    # Convert datetime string to datetime object
-    input_df['Datetime'] = pd.to_datetime(input_df['Datetime'], format='%Y-%m-%d %H:%M:%S')
-
-    # Set Datetime as index
-    input_df.set_index('Datetime', inplace=True)
-
-    # Clean the input data
-    input_df = input_df.dropna()
-
-    # Generate predictions for each variable
-    salinity_pred = salinity_model.forecast(steps=7).tolist()
-    turbidity_pred = turbidity_model.forecast(steps=7).tolist()
-    sea_temp_pred = sea_temp_model.forecast(steps=7).tolist()
-    do_saturation_pred = do_saturation_model.forecast(steps=7).tolist()
-    chlorophyll_pred = chlorophyll_model.forecast(steps=7).tolist()
-
-    # Combine predicted values into a single dictionary
-    output_data = {
-        'salinity': salinity_pred,
-        'turbidity': turbidity_pred,
-        'sea_temp': sea_temp_pred,
-        'do_saturation': do_saturation_pred,
-        'chlorophyll': chlorophyll_pred
-    }
-
-    # Return predicted values as JSON response
-    return JSONResponse(content=output_data)
-
 @app.get('/selective_data')
 async def selective_data(start_datetime: str, end_datetime: str):
     # Connect to the MySQL database
