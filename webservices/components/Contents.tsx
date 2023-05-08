@@ -7,11 +7,11 @@ interface ContentsProps {
 
 const Contents = ({ selectedTab }: ContentsProps) => {
   switch (selectedTab) {
-    case 'home':
+    case 'Dashboard':
       return <Home />;
-    case 'datainsights':
+    case 'Forecast':
       return <DataInsights />;
-    case 'map':
+    case 'Map':
       return <Map />;
     default:
       return <Home />;

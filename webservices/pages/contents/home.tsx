@@ -39,11 +39,11 @@ export default function Home() {
     Turbidity: number[];
     Conductivity: number[];
     DO: number[];
-    SeaTemp: number[];
-    Chlorophyll: number[];
+    Seatemp: number[];
+    chlorophyll: number[];
   }
   
-  const [waterData, setWaterData] = useState<WaterData>({Datetime: [], Salinity: [], Turbidity: [], Conductivity: [], DO: [], SeaTemp: [], Chlorophyll: []});
+  const [waterData, setWaterData] = useState<WaterData>({Datetime: [], Salinity: [], Turbidity: [], Conductivity: [], DO: [], Seatemp: [], chlorophyll: []});
   const [date, setDate] = useState<string[]>([]);
   
   const getData = useCallback(() => {

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Head from "next/head";
 import type { NextPage } from "next";
+import Contents from "../components/Contents";
 
 const Home: NextPage = () => {
   const [currentPage, setCurrentPage] = useState("Dashboard");
@@ -21,54 +22,55 @@ const Home: NextPage = () => {
           <a className="navbar-item">
             <h1 className="title">{currentPage}</h1>
           </a>
+            <i className="fas fa-home"></i>
         </div>
       </nav>
       {/*content*/}
-      <section className="hero is-primary">
-        <div className="hero-body">
-          <div className="container">
-            <h1 className="title">waterquality</h1>
-            <i className="fas fa-3x fa-tint"></i>
-          </div>
-        </div>
+      <section className="">
+        <i className="fas fa-user"></i>
+        <Contents selectedTab={currentPage} />
       </section>
       {/*menu*/}
-      <nav className="navbar is-fixed-bottom has-background-info" role="navigation" aria-label="main navigation">
-        <div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-start is-justify-content-space-between is-fullwidth is-flex-touch">
-            <a href="#" className={`navbar-item ${currentPage === "Dashboard" ? "is-active" : ""}`} onClick={() => handleMenuClick("Dashboard")}>
-              <span className="icon is-large">
-                <i className="fas fa-home"></i>
-              </span>
-              <span>Dashboard</span>
-            </a>
-            <a href="#" className={`navbar-item ${currentPage === "Device" ? "is-active" : ""}`} onClick={() => handleMenuClick("Device")}>
-              <span className="icon is-large">
-                <i className="fas fa-mobile-alt"></i>
-              </span>
-              <span>Device</span>
-            </a>
-            <a href="#" className={`navbar-item ${currentPage === "Map" ? "is-active" : ""}`} onClick={() => handleMenuClick("Map")}>
-              <span className="icon is-large">
-                <i className="fas fa-map-marker-alt"></i>
-              </span>
-              <span>Map</span>
-            </a>
-            <a href="#" className={`navbar-item ${currentPage === "Notification" ? "is-active" : ""}`} onClick={() => handleMenuClick("Notification")}>
-              <span className="icon is-large">
-                <i className="fas fa-bell"></i>
-              </span>
-              <span>Notification</span>
-            </a>
-            <a href="#" className={`navbar-item ${currentPage === "Forecast" ? "is-active" : ""}`} onClick={() => handleMenuClick("Forecast")}>
-              <span className="icon is-large">
-                <i className="fas fa-cloud-sun"></i>
-              </span>
-              <span>Forecast</span>
-            </a>
-          </div>
-        </div>
-      </nav>
+     <div className="bottom-nav">
+  <a href="#" className="active">
+    <i className="fa fa-home"></i>
+    <span>Home</span>
+  </a>
+  <a href="#">
+    <i className="fa fa-search"></i>
+    <span>Search</span>
+  </a>
+  <a href="#">
+    <i className="fa fa-user"></i>
+    <span>Profile</span>
+  </a>
+</div>
+        <nav className="navbar is-fixed-bottom is-mobile">
+  <div className="navbar-menu">
+    <div className="navbar-start">
+      <a href="#" className="navbar-item">
+        <span className="icon is-large"><i className="fas fa-home"></i></span>
+        <span>Dashboard</span>
+      </a>
+      <a href="#" className="navbar-item">
+        <span className="icon is-large"><i className="fas fa-mobile-alt"></i></span>
+        <span>Device</span>
+      </a>
+      <a href="#" className="navbar-item">
+        <span className="icon is-large"><i className="fas fa-map-marker-alt"></i></span>
+        <span>Map</span>
+      </a>
+      <a href="#" className="navbar-item">
+        <span className="icon is-large"><i className="fas fa-bell"></i></span>
+        <span>Notification</span>
+      </a>
+      <a href="#" className="navbar-item">
+        <span className="icon is-large"><i className="fas fa-cloud-sun"></i></span>
+        <span>Forecast</span>
+      </a>
+    </div>
+  </div>
+</nav>
     </div>
   );
 };
