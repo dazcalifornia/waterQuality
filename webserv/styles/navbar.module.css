@@ -1,0 +1,33 @@
+.navbar {
+  background-color: #333; /* change this to the color you want */
+  color: #fff; /* change this to the text color you want */
+  height: 60px; /* change this to the height you want */
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 800px; /* change this to the max-width you want */
+  margin: 0 auto;
+  padding: 0 20px;
+  list-style: none;
+}
+
+.nav-item {
+  margin-right: 20px; /* change this to the margin you want between items */
+}
+
+.nav-link {
+  color: #fff; /* change this to the text color you want for the links */
+  text-decoration: none;
+  font-size: 18px; /* change this to the font size you want */
+}
+

@@ -80,7 +80,7 @@ footer nav ul li{
   z-index: 1;
 }
 
-footer nav ul li a{
+footer nav ul li p{
   position: relative;
   display: flex;
   justify-content: center;
@@ -93,7 +93,7 @@ footer nav ul li a{
   z-index: 3;
 }
 
-footer nav ul li a .icon{
+footer nav ul li p .icon{
   position: relative;
   display: block;
   line-height: 75px;
@@ -101,11 +101,112 @@ footer nav ul li a .icon{
   transition: 0.5s;
 }
 
-footer nav ul li.active a .icon{
+footer nav ul li.active p .icon{
   color: #fff;
 }
 
 footer nav ul li a .icon i {
   font-size: 1.5em;
 }
+
+footer nav ul li p .title {
+  position: absolute;
+  top: -70%px;
+  left: 50%;
+  transform: translate(-50%,15%);
+  width: auto;
+  background: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: 0.5s;
+  opacity: 0;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  visibility: hidden;
+}
+
+
+footer nav ul li:hover p .title{
+  top: -100%;
+  visibility: visible;
+  transfrom: translate(-50%, 50%);
+}
+
+footer ul li p .title::before{
+  position: absolute;
+  content: '';
+  left: 50%;
+  bottom: -8px;
+  width: 12px;
+  height: 12px;
+  transform: rotate(45deg) translateX(-50%);
+  border-radius: 2px;
+  background-color: #fff;
+}
+
+footer ul .indicator{
+  position: absolute;
+  left: 0;
+  width: 70px;
+  height: 70px;
+  transition: all 0,5s;
+}
+
+footer ul .indicator::before{
+  position: absolute;
+  content: '';
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.1);
+  transition: all 0.5s;
+}
+
+footer ul li.nth-child(1).active ~ .indicator{
+  transform: translateX(calc(70px * 0));
+}
+
+footer ul li.nth-child(2).active ~ .indicator{
+  transform: translateX(calc(70px * 1));
+}
+
+footer ul li.nth-child(3).active ~ .indicator{
+  transform: translateX(calc(70px * 2));
+}
+
+footer ul li.nth-child(4).active ~ .indicator{
+  transform: translateX(calc(70px * 3));
+}
+
+footer ul li.nth-child(5).active ~ .indicator{
+  transform: translateX(calc(70px * 4));
+}
+
+footer ul li:nth-child(1):hover ~ .indicator::before{
+  background-color: #ff0057;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+footer ul li:nth-child(2):hover ~ .indicator::before{
+  background-color: #00d4ff;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+footer ul li:nth-child(3):hover ~ .indicator::before{
+  background-color: #00ff9d;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+footer ul li:nth-child(4):hover ~ .indicator::before{
+  background-color: #ffea00;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+footer ul li:nth-child(5):hover ~ .indicator::before{
+  background-color: #ff00c8;
+  transform: translate(-50%, -50%) scale(1);
+}
+
 
