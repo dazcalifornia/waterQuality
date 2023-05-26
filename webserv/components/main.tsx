@@ -5,18 +5,26 @@ import React,{
 import MyAppBar from './appbar';
 import Navigation from './navigation';
 
-import HomePage from '@/pages/homepage';
-import AboutPage from '@/pages/about';
-import ContactPage from '@/pages/contact';
+import DashboardPage from '@/pages/dashboard';
+import ForecastPage from '@/pages/forecast';
+import MapPage from '@/pages/map';
+import DevicePage from '@/pages/device';
+import NotiPage from '@/pages/noti';
 
-const pageComponents ={
-    home :HomePage,
-    about :AboutPage,
-    contact :ContactPage
-  };
+type PageComponents = {
+  [key: string]: React.ComponentType<any>;
+};
+
+const pageComponents : PageComponents ={
+  dashboard: DashboardPage,
+  device: DevicePage,
+  forecast: ForecastPage,
+  map: MapPage,
+  notifications: NotiPage,
+};
 
 const Main = () =>{
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState('dashboard');
 
   const handleChangePage = (event:any, newValue:any) => {
     setCurrentPage(newValue);
@@ -29,13 +37,12 @@ const Main = () =>{
       <MyAppBar currentPage={currentPage} />
       <div className="content-container">
         <PageComponent />
-        <p>hi</p>
       </div>
       <Navigation currentPage={currentPage} handleChangePage={handleChangePage} />
       <style jsx>{`
         .content-container {
           padding-bottom: 56px; /* Height of bottom navigation */
-          margin-top: 64px; /* Height of app bar */
+          margin-top: 110px; /* Height of app bar */
         }
       `}</style>
     </div>

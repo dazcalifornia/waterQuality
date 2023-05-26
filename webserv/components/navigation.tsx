@@ -2,9 +2,12 @@ import React from 'react';
 
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import HomeIcon from '@mui/icons-material/Home';
-import InfoIcon from '@mui/icons-material/Info';
-import ContactMailIcon from '@mui/icons-material/ContactMail';
+
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import DeviceHubIcon from '@mui/icons-material/DeviceHub';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import MapIcon from '@mui/icons-material/Map';
+import UpdateIcon from '@mui/icons-material/Update';
 
 
 const Navigation = ({currentPage, handleChangePage} :any) => {
@@ -15,11 +18,12 @@ const Navigation = ({currentPage, handleChangePage} :any) => {
         onChange={handleChangePage}
         showLabels
         >
-        <BottomNavigationAction label="Home" value="home" icon={<HomeIcon />} />
-        <BottomNavigationAction label="About" value="about" icon={<InfoIcon />} />
-        <BottomNavigationAction label="Contact" value="contact" icon={<ContactMailIcon />} />
+        <BottomNavigationAction label="Dashboard" value="dashboard" icon={<DashboardIcon />} />
+        <BottomNavigationAction label="My device" value="device" icon={<DeviceHubIcon />} />
+        <BottomNavigationAction label="Notifications" value="notifications" icon={<NotificationsIcon />} />
+        <BottomNavigationAction label="Map" value="map" icon={<MapIcon />} />
+        <BottomNavigationAction label="Forecasts" value="forecast" icon={<UpdateIcon />} />
       </BottomNavigation>
-
     );
 }
 export default Navigation;
