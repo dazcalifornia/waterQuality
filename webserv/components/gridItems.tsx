@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 
 import AccordionItem from '@/components/accordian';
 import { 
@@ -6,7 +6,8 @@ import {
   Badge,
   Box,
   Paper,
-  Typography
+  Typography,
+  Collapse
 } from '@mui/material';
 
 import {
@@ -61,10 +62,14 @@ const circle = (
 
 const GridItems = ({id,handleClick,isSelected}) => {
   
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  const handleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
 
    return (
-    <>
-    <Grid item xs={4} md={3}>
+   <Grid item  xs={4} md={3}>
       <div
         onClick={() => handleClick(id)}
         style={{
@@ -83,24 +88,24 @@ const GridItems = ({id,handleClick,isSelected}) => {
           badgeContent=""
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'left',
+            horizontal: 'right',
           }}
-          style={{ transform: 'scale(1.5)', marginBottom: "20px" }}
+          style={{ transform: 'scale(1.5)' }}
         >
           {circle}
         </Badge>
         <Typography variant="subtitle1" style={{ marginTop: 8 }}>
           Badge: {id}
         </Typography>
-        
+        <Typography variant="subtitle2">ID: {id}</Typography>
+        <button onClick={handleExpand}>{isExpanded ? 'Collapse' : 'Expand'}</button>
+        <Collapse in={isExpanded}>
+          <div style={{ width: '100%', marginTop: 16 }}>
+            <Line data={chartData} options={chartOptions} />
+          </div>
+        </Collapse>
       </div>
     </Grid>
-        {isSelected && 
-          <div style={{ width: '100%', marginLeft: 8 ,marginRight: 8}}>
-            <Line data={chartData} options={chartOptions} />
-        </div>}
-
-    </>
   );
 }
 export default GridItems;
