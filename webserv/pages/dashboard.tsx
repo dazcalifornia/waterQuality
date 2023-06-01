@@ -1,16 +1,9 @@
-import React,{
-  useState,
-  useEffect,
-  useCallback
-} from 'react';
-
-import axios from 'axios'
-import {Grid, styled, Collapse} from '@mui/material';
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import { Grid, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import GridItems from '@/components/gridItems';
-import AccordionItem from '@/components/accordian';
-
-import PillButton from '@/components/PillButton';
 
 import {
     Chart as ChartJS,
@@ -34,82 +27,39 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
 import { Line } from 'react-chartjs-2';
-
-
-const StyleGrid = styled(Grid)({
-  '&.MuiPaper-root': {
-    boxShadow:'none' 
-  },
-})
-
-
-const chartData = {
-    labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5'],
-    datasets: [
-      {
-        label: 'Data',
-        data: [12, 19, 3, 5, 2],
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-  };
-
-
-
-
-// fetch data and plot graph from localhost:8000/db
 interface WaterData {
   Datetime: string[];
   Salinity: number[];
   Turbidity: number[];
   Conductivity: number[];
   DO: number[];
-  Seatemp: number[];
+  SeaTemp: number[];
   chlorophyll: number[];
 }
 
-
-
-
-const DashboardPage = () => {
-  const [selectedGridItem, setSelectedGridItem] = useState(null);
-
-  const handleGridItemClick = (gridItemId) => {
-    if (selectedGridItem === gridItemId) {
-      setSelectedGridItem(null);
-    } else {
-      setSelectedGridItem(gridItemId);
-    }
-  };
-
-  //fetch 
+const Dashboard = () => {
   const [waterData, setWaterData] = useState<WaterData>({
     Datetime: [],
     Salinity: [],
     Turbidity: [],
     Conductivity: [],
     DO: [],
-    Seatemp: [],
+    SeaTemp: [],
     chlorophyll: [],
   });
   const [date, setDate] = useState<string[]>([]);
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const getData = useCallback(() => {
     axios
       .get<WaterData>('http://localhost:8000/db')
       .then((res) => {
-        const data = res.data;
-        setWaterData(data);
-        setDate(data.Datetime);
-        console.log(data);
+        const { Datetime, ...restData } = res.data;
+        setWaterData((prevState) => ({ ...prevState, ...restData, Datetime }));
+        setDate(Datetime);
+        console.log(restData);
       })
       .catch((err) => {
         console.log(err);
@@ -120,35 +70,102 @@ const DashboardPage = () => {
     getData();
   }, [getData]);
 
+  const [handleCharts, setHandleCharts] = useState({});
 
+  const handleClick = (id: string) => {
+    setSelectedItem(id);
+    console.log("id", id);
+    const testChart = {
+      labels: date,
+      datasets: [
+        {
+        data: waterData[id as keyof WaterData],
+        label: id,
+        fill: false,
+        backgroundColor: "rgba(75,192,192,1)",
+        borderColor: "rgba(75,192,192,1)",
+      },
+      ]
+    }
+    setHandleCharts(testChart);
+  };
 
+  const water = {
+    labels: date,
+    datasets: [
+      {
+        data: waterData.Salinity,
+        label: "Salinity",
+        fill: false,
+        backgroundColor: "rgba(75,192,192,1)",
+        borderColor: "rgba(75,192,192,1)",
+      },
+      {
+        data: waterData.Turbidity,
+        label: "Turbidity",
+        fill: false,
+        backgroundColor: "#742774",
+        borderColor: "#742774"
+      },
+      {
+        data: waterData.Conductivity,
+        label: "Conductivity",
+        fill: false,
+        backgroundColor: "#ff0000",
+        borderColor: "#ff0000"
+      },
+      {
+        data: waterData.DO,
+        label: "DO",
+        fill: false,
+        backgroundColor: "#00ff00",
+        borderColor: "#00ff00"
+      },
+      {
+        data: waterData.Seatemp,
+        label: "Seatemp",
+        fill: false,
+        backgroundColor: "#0000ff",
+        borderColor: "#0000ff"
+      },
+      {
+        data: waterData.chlorophyll,
+        label: "chlorophyll",
+        fill: false,
+        backgroundColor: "#ffff00",
+        borderColor: "#ffff00"
+      }
+    ],
+  };
 
   return (
-    <StyleGrid container spacing={2}>
+    <div>
+      <Grid container spacing={2}>
+        {Object.keys(waterData).map((key) => (
+          <GridItems
+            key={key}
+            id={key}
+            handleClick={handleClick}
+            isSelected={selectedItem === key}
+          />
+        ))}
+       
+      </Grid>
 
-      <Grid item xs={12}>
-        <h1>Dashboard</h1>
-      </Grid>
-      <Grid item xs={12}>
-        <Grid container spacing={2} direction="row">
-          <GridItems id={1} handleClick={handleGridItemClick} isSelected={selectedGridItem === 1} />
-          <GridItems id={2} handleClick={handleGridItemClick} isSelected={selectedGridItem === 2} />
-          <GridItems id={3} handleClick={handleGridItemClick} isSelected={selectedGridItem === 3} />
-          <GridItems id={4} handleClick={handleGridItemClick} isSelected={selectedGridItem === 4} />
-          <GridItems id={5} handleClick={handleGridItemClick} isSelected={selectedGridItem === 5} />
-          <GridItems id={6} handleClick={handleGridItemClick} isSelected={selectedGridItem === 6} />
-        </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        {selectedGridItem && 
-          <Collapse in={selectedGridItem} timeout="auto" unmountOnExit>
-            <div style={{ width: '100%', paddingLeft:10, paddingRight:10}}>
-            <Line data={chartData} options={chartOptions} />
-          </div>
-          </Collapse>
-        }
-      </Grid>
-    </StyleGrid>
+      {selectedItem && (
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Chart for {selectedItem}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            {/* Place your chart component here */}
+            <Line data={handleCharts} />
+            <Typography>Chart goes here</Typography>
+          </AccordionDetails>
+        </Accordion>
+      )}
+    </div>
   );
-}
-export default DashboardPage;
+};
+
+export default Dashboard;
