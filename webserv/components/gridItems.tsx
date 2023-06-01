@@ -63,11 +63,7 @@ const circle = (
 const GridItems = ({id,handleClick,isSelected}) => {
   
   const [isExpanded, setIsExpanded] = useState(false);
-  
-  const handleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
-
+   
    return (
    <Grid item  xs={4} md={3}>
       <div
@@ -90,20 +86,14 @@ const GridItems = ({id,handleClick,isSelected}) => {
             vertical: 'bottom',
             horizontal: 'left',
           }}
-          style={{ transform: 'scale(1.5)',marginTop:"20px" }}
+          style={{ transform: 'scale(1.5)' }}
         >
           {circle}
         </Badge>
-        <Typography variant="subtitle1" style={{ marginTop: 8 }}>
+        <Typography variant="subtitle1" style={{ marginTop: 20 }}>
           Badge: {id}
         </Typography>
-        <Typography variant="subtitle2">ID: {id}</Typography>
-        <button onClick={handleExpand}>{isExpanded ? 'Collapse' : 'Expand'}</button>
-        <Collapse in={isExpanded}>
-          <div style={{ width: '100%', marginTop: 16 }}>
-            <Line data={chartData} options={chartOptions} />
-          </div>
-        </Collapse>
+
       </div>
     </Grid>
   );
