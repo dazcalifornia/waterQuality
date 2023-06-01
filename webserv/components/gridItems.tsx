@@ -88,9 +88,9 @@ const GridItems = ({id,handleClick,isSelected}) => {
           badgeContent=""
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'right',
+            horizontal: 'left',
           }}
-          style={{ transform: 'scale(1.5)' }}
+          style={{ transform: 'scale(1.5)',marginTop:"20px" }}
         >
           {circle}
         </Badge>
