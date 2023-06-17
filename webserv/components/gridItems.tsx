@@ -7,7 +7,8 @@ import {
   Box,
   Paper,
   Typography,
-  Collapse
+  Collapse,
+  BadgeProps
 } from '@mui/material';
 
 import {
@@ -32,40 +33,37 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-import { Line } from 'react-chartjs-2';
 
-const shapeStyles = { bgcolor: 'primary.main', width: 40, height: 40 };
+const shapeStyles = { bgcolor: 'primary.main', width: 50, height: 50 };
 const shapeCircleStyles = { borderRadius: '50%' };
 
-
-const chartData = {
-    labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5'],
-    datasets: [
-      {
-        label: 'Data',
-        data: [12, 19, 3, 5, 2],
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-  };
 
 const circle = (
   <Box component="span" sx={{ ...shapeStyles, ...shapeCircleStyles }} />
 );
 
-const GridItems = ({id,handleClick,isSelected}) => {
+
+const GridItems = ({ id, handleClick, isSelected, data }:any) => {
+
+  const diff =
+    data[id][10] && data[id][11] ? Math.abs(data[id][11] - data[id][10]) : null;
   
-  const [isExpanded, setIsExpanded] = useState(false);
-   
-   return (
-   <Grid item  xs={4} md={3}>
+
+  let badgeColor: BadgeProps['color'] = 'default'; // Explicitly specify the type
+
+  if (diff !== null) {
+    if (diff >= 10) {
+      badgeColor = 'error';
+    } else if (diff >= 5) {
+      badgeColor = 'warning';
+    } else {
+      badgeColor = 'success';
+    }
+  }
+
+
+  return (
+    <Grid item xs={4} md={3}>
       <div
         onClick={() => handleClick(id)}
         style={{
@@ -79,9 +77,9 @@ const GridItems = ({id,handleClick,isSelected}) => {
         }}
       >
         <Badge
-          color="secondary"
+          color={badgeColor}
           overlap="circular"
-          badgeContent=""
+          badgeContent={diff !== null ? `${diff.toFixed(2)}` : ''}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'left',
@@ -91,11 +89,11 @@ const GridItems = ({id,handleClick,isSelected}) => {
           {circle}
         </Badge>
         <Typography variant="subtitle1" style={{ marginTop: 20 }}>
-          Badge: {id}
+          {id}
         </Typography>
-
       </div>
     </Grid>
   );
-}
+};
+
 export default GridItems;
