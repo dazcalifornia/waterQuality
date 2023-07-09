@@ -3,10 +3,15 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
 
+from pytz import timezone
+from fastapi import Query
+from datetime import datetime, timedelta, timezone
+
 from pydantic import BaseModel
 import pandas as pd
 import json
 import pickle 
+from pandas.tseries.offsets import DateOffset
 
 
 app = FastAPI()
@@ -66,6 +71,94 @@ async def get_db():
 
     return JSONResponse(content=data)
 
+@app.get("/db2")
+async def get_db(time_range: str = '24hours'):
+    db = mysql.connector.connect(**db_config)
+    query = "SELECT * FROM `WaterData` ORDER BY `Datetime` DESC"
+    df = pd.read_sql(query, con=db)
+    db.close()
+    
+    # convert to datetime
+    df['Datetime'] = pd.to_datetime(df['Datetime'])
+    
+    # Set Datetime column as the index
+    df.set_index('Datetime', inplace=True)
+    
+    if time_range == '24hours':
+        df_range = df.tail(24)  # Retrieve the last 24 rows
+    elif time_range == 'week':
+        start_time = df.index.max() - DateOffset(weeks=1) + timedelta(days=1)  # Start from the beginning of the week
+        end_time = df.index.max()  # End at the latest available date
+        df_range = df[(df.index >= start_time) & (df.index <= end_time)]
+        df_range = df_range.resample('D').mean()  # Resample to daily frequency
+    elif time_range == 'month':
+        start_time = df.index.max() - DateOffset(months=1) + timedelta(days=1)  # Start from the beginning of the month
+        end_time = df.index.max()  # End at the latest available date
+        df_range = df[(df.index >= start_time) & (df.index <= end_time)]
+        df_range = df_range.resample('D').mean()  # Resample to daily frequency
+    else:
+        df_range = df
+    
+    data = {}
+    data['Datetime'] = df_range.index.strftime('%Y-%m-%d').tolist()
+    data['Salinity'] = df_range['Salinity_PSU'].tolist()
+    data['Conductivity'] = df_range['Conductivity_mScm'].tolist()
+    data['Turbidity'] = df_range['Turbidity_FTU'].tolist()
+    data['SeaTemp'] = df_range['Sea_temperature_°C'].tolist()
+    data['DO'] = df_range['DO_saturation_'].tolist()
+    data['chlorophyll'] = df_range['Chlorophylla_ppb'].tolist()
+
+    return JSONResponse(content=data)
+
+
+@app.get("/noti")
+async def get_notification():
+    db = mysql.connector.connect(**db_config)
+    query = "SELECT * FROM `WaterData` ORDER BY `Datetime` DESC LIMIT 2"  # Retrieve the latest 2 rows
+    df = pd.read_sql(query, con=db)
+    db.close()
+    
+    if len(df) < 2:
+        return JSONResponse(content={'error': 'Insufficient data'}, status_code=400)
+    
+    latest_row = df.iloc[0]
+    previous_row = df.iloc[1]
+    
+    # Calculate the absolute difference as a percentage
+    notification = {
+        'Salinity': {
+            'latest': latest_row['Salinity_PSU'],
+            'previous': previous_row['Salinity_PSU'],
+            'percent_diff': abs(latest_row['Salinity_PSU'] - previous_row['Salinity_PSU']) / previous_row['Salinity_PSU'] * 100
+        },
+        'Conductivity': {
+            'latest': latest_row['Conductivity_mScm'],
+            'previous': previous_row['Conductivity_mScm'],
+            'percent_diff': abs(latest_row['Conductivity_mScm'] - previous_row['Conductivity_mScm']) / previous_row['Conductivity_mScm'] * 100
+        },
+        'Turbidity': {
+            'latest': latest_row['Turbidity_FTU'],
+            'previous': previous_row['Turbidity_FTU'],
+            'percent_diff': abs(latest_row['Turbidity_FTU'] - previous_row['Turbidity_FTU']) / previous_row['Turbidity_FTU'] * 100
+        },
+        'SeaTemp': {
+            'latest': latest_row['Sea_temperature_°C'],
+            'previous': previous_row['Sea_temperature_°C'],
+            'percent_diff': abs(latest_row['Sea_temperature_°C'] - previous_row['Sea_temperature_°C']) / previous_row['Sea_temperature_°C'] * 100
+        },
+        'DO': {
+            'latest': latest_row['DO_saturation_'],
+            'previous': previous_row['DO_saturation_'],
+            'percent_diff': abs(latest_row['DO_saturation_'] - previous_row['DO_saturation_']) / previous_row['DO_saturation_'] * 100
+        },
+        'chlorophyll': {
+            'latest': latest_row['Chlorophylla_ppb'],
+            'previous': previous_row['Chlorophylla_ppb'],
+            'percent_diff': abs(latest_row['Chlorophylla_ppb'] - previous_row['Chlorophylla_ppb']) / previous_row['Chlorophylla_ppb'] * 100
+        }
+    }
+
+    return JSONResponse(content=notification)
 
 
 @app.get("/salinity")
@@ -136,4 +229,54 @@ async def selective_data(start_datetime: str, end_datetime: str):
     # Return data as JSON response
     return JSONResponse(content=output_data)
 
+
+class WaterData(BaseModel):
+    Datetime: str
+    Salinity: float
+    Turbidity: float
+    SeaTemp: float
+    DOSaturation: float
+    Chlorophyll: float
+
+@app.get('/forecast')
+async def forecast():
+    db = mysql.connector.connect(**db_config)
+    query = "SELECT * FROM `WaterData`"
+    df = pd.read_sql(query, con=db)
+    db.close()
+    
+    # Convert datetime string to datetime object
+    df['Datetime'] = pd.to_datetime(df['Datetime'], format='%Y-%m-%d %H:%M:%S')
+
+    # Set Datetime as index
+    df.set_index('Datetime', inplace=True)
+
+    # Clean the input data
+    df = df.dropna()
+
+    # Generate predictions for each variable
+    salinity_pred = salinity_model.forecast(steps=7).tolist()
+    turbidity_pred = turbidity_model.forecast(steps=7).tolist()
+    sea_temp_pred = sea_temp_model.forecast(steps=7).tolist()
+    do_saturation_pred = do_saturation_model.forecast(steps=7).tolist()
+    chlorophyll_pred = chlorophyll_model.forecast(steps=7).tolist()
+
+    # Create a list of forecasted dates for the next 7 days
+    forecast_dates = pd.date_range(start=df.index[-1] + pd.DateOffset(days=1), periods=7, freq='D').strftime('%Y-%m-%d').tolist()
+
+    # Combine predicted values with forecasted dates into a list of WaterData objects
+    forecast_data = []
+    for i in range(7):
+        data = WaterData(
+            Datetime=forecast_dates[i],
+            Salinity=salinity_pred[i],
+            Turbidity=turbidity_pred[i],
+            SeaTemp=sea_temp_pred[i],
+            DOSaturation=do_saturation_pred[i],
+            Chlorophyll=chlorophyll_pred[i]
+        )
+        forecast_data.append(data)
+
+    # Return forecasted values as JSON response
+    return JSONResponse(content=[data.dict() for data in forecast_data])
 

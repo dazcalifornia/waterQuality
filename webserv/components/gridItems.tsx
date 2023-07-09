@@ -1,26 +1,24 @@
-import React,{useState} from 'react';
-
-import AccordionItem from '@/components/accordian';
-import { 
+import React from 'react';
+import {
   Grid,
   Badge,
   Box,
   Paper,
   Typography,
   Collapse,
-  BadgeProps
+  BadgeProps,
 } from '@mui/material';
 
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
 } from 'chart.js';
 
 ChartJS.register(
@@ -34,22 +32,37 @@ ChartJS.register(
   Legend
 );
 
-const shapeStyles = { bgcolor: 'primary.main', width: 50, height: 50 };
+
+const shapeStyles = {
+  bgcolor: 'white',
+  width: 50,
+  height: 50,
+  borderRadius: '50%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  border: '2px solid blue',
+};
+
 const shapeCircleStyles = { borderRadius: '50%' };
 
 
-const circle = (
-  <Box component="span" sx={{ ...shapeStyles, ...shapeCircleStyles }} />
+const GridItems = ({ id, handleClick, isSelected, data }: any) => {
+  const latestData = data[id].slice(-1)[0]; // Get the last element of the data array
+
+  const circle = (
+  <Box component="span" sx={{ ...shapeStyles, ...shapeCircleStyles }}>
+    <Typography variant="subtitle1">
+      {latestData !== undefined ? latestData.toFixed(2) : ''}
+    </Typography>
+  </Box>
 );
-
-
-const GridItems = ({ id, handleClick, isSelected, data }:any) => {
-
   const diff =
-    data[id][10] && data[id][11] ? Math.abs(data[id][11] - data[id][10]) : null;
-  
+    latestData && data[id][data[id].length - 2]
+      ? Math.abs(latestData - data[id][data[id].length - 2])
+      : null;
 
-  let badgeColor: BadgeProps['color'] = 'default'; // Explicitly specify the type
+  let badgeColor: BadgeProps['color'] = 'default';
 
   if (diff !== null) {
     if (diff >= 10) {
@@ -60,7 +73,6 @@ const GridItems = ({ id, handleClick, isSelected, data }:any) => {
       badgeColor = 'success';
     }
   }
-
 
   return (
     <Grid item xs={4} md={3}>
@@ -90,6 +102,9 @@ const GridItems = ({ id, handleClick, isSelected, data }:any) => {
         </Badge>
         <Typography variant="subtitle1" style={{ marginTop: 20 }}>
           {id}
+        </Typography>
+        <Typography variant="subtitle1" style={{ marginTop: 10 }}>
+          {latestData !== undefined ? latestData.toFixed(2) : ''}
         </Typography>
       </div>
     </Grid>
