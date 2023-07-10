@@ -71,10 +71,11 @@ async def get_db():
 
     return JSONResponse(content=data)
 
+
 @app.get("/db2")
 async def get_db(time_range: str = '24hours'):
     db = mysql.connector.connect(**db_config)
-    query = "SELECT * FROM `WaterData` ORDER BY `Datetime` DESC"
+    query = "SELECT * FROM `WaterData`"
     df = pd.read_sql(query, con=db)
     db.close()
     
@@ -86,21 +87,25 @@ async def get_db(time_range: str = '24hours'):
     
     if time_range == '24hours':
         df_range = df.tail(24)  # Retrieve the last 24 rows
+        datetime_format = '%H:%M:%S'  # Format as time only
     elif time_range == 'week':
         start_time = df.index.max() - DateOffset(weeks=1) + timedelta(days=1)  # Start from the beginning of the week
         end_time = df.index.max()  # End at the latest available date
         df_range = df[(df.index >= start_time) & (df.index <= end_time)]
         df_range = df_range.resample('D').mean()  # Resample to daily frequency
+        datetime_format = '%Y-%m-%d'  # Format as date only
     elif time_range == 'month':
         start_time = df.index.max() - DateOffset(months=1) + timedelta(days=1)  # Start from the beginning of the month
         end_time = df.index.max()  # End at the latest available date
         df_range = df[(df.index >= start_time) & (df.index <= end_time)]
         df_range = df_range.resample('D').mean()  # Resample to daily frequency
+        datetime_format = '%Y-%m-%d'  # Format as date only
     else:
         df_range = df
+        datetime_format = '%Y-%m-%d %H:%M:%S'  # Format as full date and time
     
     data = {}
-    data['Datetime'] = df_range.index.strftime('%Y-%m-%d').tolist()
+    data['Datetime'] = df_range.index.strftime(datetime_format).tolist()
     data['Salinity'] = df_range['Salinity_PSU'].tolist()
     data['Conductivity'] = df_range['Conductivity_mScm'].tolist()
     data['Turbidity'] = df_range['Turbidity_FTU'].tolist()
@@ -109,6 +114,7 @@ async def get_db(time_range: str = '24hours'):
     data['chlorophyll'] = df_range['Chlorophylla_ppb'].tolist()
 
     return JSONResponse(content=data)
+
 
 
 @app.get("/noti")

@@ -53,6 +53,7 @@ const getData = useCallback((timeRange?: string) => {
           SeaTemp: restData.SeaTemp,
           chlorophyll: restData.chlorophyll,
         };
+        setDate(Datetime);
       } else {
         formattedData = {
           Salinity: restData.Salinity.slice(0, 12),
@@ -62,14 +63,10 @@ const getData = useCallback((timeRange?: string) => {
           SeaTemp: restData.SeaTemp.slice(0, 12),
           chlorophyll: restData.chlorophyll.slice(0, 12),
         };
+        setDate(Datetime.slice(0, 12));
       }
 
-      setWaterData((prevData) => ({
-        ...prevData,
-        ...formattedData,
-      }));
-
-      setDate(Datetime.slice(0, 12));
+      setWaterData(formattedData);
       console.log(formattedData);
     })
     .catch((err) => {
@@ -187,7 +184,7 @@ useEffect(() => {
                   },
                   title: {
                     display: true,
-                    text: `${selectedItem} Chart By Years`,
+                    text: `${selectedItem} Chart By  ${timeRange}`,
                   },
                 },
               }}
