@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Grid,
   Badge,
@@ -7,7 +7,7 @@ import {
   Typography,
   Collapse,
   BadgeProps,
-} from '@mui/material';
+} from "@mui/material";
 
 import {
   Chart as ChartJS,
@@ -19,7 +19,8 @@ import {
   Tooltip,
   Legend,
   Filler,
-} from 'chart.js';
+  BarElement,
+} from "chart.js";
 
 ChartJS.register(
   CategoryScale,
@@ -29,48 +30,67 @@ ChartJS.register(
   Filler,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  BarElement
 );
 
-
 const shapeStyles = {
-  bgcolor: 'white',
+  bgcolor: "white",
   width: 50,
   height: 50,
-  borderRadius: '50%',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  border: '2px solid blue',
+  borderRadius: "50%",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  border: "2px solid  #073763",
 };
 
-const shapeCircleStyles = { borderRadius: '50%' };
-
+const shapeCircleStyles = { borderRadius: "50%" };
 
 const GridItems = ({ id, handleClick, isSelected, data }: any) => {
   const latestData = data[id].slice(-1)[0]; // Get the last element of the data array
 
   const circle = (
-  <Box component="span" sx={{ ...shapeStyles, ...shapeCircleStyles }}>
-    <Typography variant="subtitle1">
-      {latestData !== undefined ? latestData.toFixed(2) : ''}
-    </Typography>
-  </Box>
-);
+    <Box component="span" sx={{ ...shapeStyles, ...shapeCircleStyles }}>
+      <Typography variant="body1">
+        {latestData !== undefined ? latestData.toFixed(2) : ""}
+      </Typography>
+    </Box>
+  );
   const diff =
     latestData && data[id][data[id].length - 2]
       ? Math.abs(latestData - data[id][data[id].length - 2])
       : null;
 
-  let badgeColor: BadgeProps['color'] = 'default';
+  let badgeColor: BadgeProps["color"] = "default";
+  let unit = "";
+
+  if (id === "Salinity") {
+    unit = "mg/l";
+  } else if (id === "SeaTemp") {
+    unit = "°C";
+  } else if (id === "pH") {
+    unit = "pH";
+  } else if (id === "DO") {
+    unit = "mg/l";
+  } else if (id === "Turbidity") {
+    unit = "NTU";
+  } else if (id === "Chlorophyll") {
+    unit = "µg/l";
+  } else if (id === "Conductivity") {
+    unit = "µS/cm";
+  } else if (id === "chlorophyll") {
+    unit = "µg/l";
+  }
+  // Add more conditions for other data types
 
   if (diff !== null) {
     if (diff >= 10) {
-      badgeColor = 'error';
+      badgeColor = "error";
     } else if (diff >= 5) {
-      badgeColor = 'warning';
+      badgeColor = "warning";
     } else {
-      badgeColor = 'success';
+      badgeColor = "success";
     }
   }
 
@@ -79,32 +99,29 @@ const GridItems = ({ id, handleClick, isSelected, data }: any) => {
       <div
         onClick={() => handleClick(id)}
         style={{
-          cursor: 'pointer',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          cursor: "pointer",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           padding: 16,
-          border: isSelected ? '2px solid #000' : '2px solid transparent',
+          border: isSelected ? "2px solid #000" : "2px solid transparent",
           borderRadius: 8,
         }}
       >
         <Badge
           color={badgeColor}
           overlap="circular"
-          badgeContent={diff !== null ? `${diff.toFixed(2)}` : ''}
+          badgeContent={diff !== null ? `${diff.toFixed(2)}` : ""}
           anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
+            vertical: "bottom",
+            horizontal: "left",
           }}
-          style={{ transform: 'scale(1.5)' }}
+          style={{ transform: "scale(1.5)", fontSize: "10px" }}
         >
           {circle}
         </Badge>
-        <Typography variant="subtitle1" style={{ marginTop: 20 }}>
-          {id}
-        </Typography>
-        <Typography variant="subtitle1" style={{ marginTop: 10 }}>
-          {latestData !== undefined ? latestData.toFixed(2) : ''}
+        <Typography style={{ marginTop: 20 }}>
+          {id} {unit}
         </Typography>
       </div>
     </Grid>
