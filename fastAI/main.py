@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
@@ -44,6 +44,59 @@ sea_temp_model = pickle.load(open('./models/sea_temp_model.pkl', 'rb'))
 do_saturation_model = pickle.load(open('./models/do_saturation_model.pkl', 'rb'))
 chlorophyll_model = pickle.load(open('./models/chlorophyll_model.pkl', 'rb'))
 
+
+class WaterData(BaseModel):
+    Datetime: str
+    Salinity: float
+    Turbidity: float
+    SeaTemp: float
+    DOSaturation: float
+    Chlorophyll: float
+
+
+@app.get('/forecast')
+async def forecast():
+    db = mysql.connector.connect(**db_config)
+    query = "SELECT * FROM `WaterData`"
+    df = pd.read_sql(query, con=db)
+    db.close()
+    
+    # Convert datetime string to datetime object
+    df['Datetime'] = pd.to_datetime(df['Datetime'].str.replace(':', ''), format='%Y-%m-%d %H%M%S%z')
+
+    # Set Datetime as index
+    df.set_index('Datetime', inplace=True)
+
+    # Clean the input data
+    df = df.dropna()
+
+    # Generate predictions for each variable
+    salinity_pred = salinity_model.forecast(steps=7).tolist()
+    turbidity_pred = turbidity_model.forecast(steps=7).tolist()
+    sea_temp_pred = sea_temp_model.forecast(steps=7).tolist()
+    do_saturation_pred = do_saturation_model.forecast(steps=7).tolist()
+    chlorophyll_pred = chlorophyll_model.forecast(steps=7).tolist()
+
+    # Create a list of forecasted dates for the next 7 days
+    forecast_dates = pd.date_range(start=df.index[-1] + pd.DateOffset(days=1), periods=7, freq='D').strftime('%Y-%m-%d').tolist()
+
+    # Combine predicted values with forecasted dates into a list of WaterData objects
+    forecast_data = []
+    for i in range(7):
+        data = WaterData(
+            Datetime=forecast_dates[i],
+            Salinity=salinity_pred[i],
+            Turbidity=turbidity_pred[i],
+            SeaTemp=sea_temp_pred[i],
+            DOSaturation=do_saturation_pred[i],
+            Chlorophyll=chlorophyll_pred[i]
+        )
+        forecast_data.append(data)
+
+    # Return forecasted values as JSON response
+    return JSONResponse(content=[data.dict() for data in forecast_data])
+
+
 @app.get("/db")
 async def get_db():
     db = mysql.connector.connect(**db_config)
@@ -69,50 +122,6 @@ async def get_db():
     data['DO'] = df_monthly['DO_saturation_'].tolist()
     data['chlorophyll'] = df_monthly['Chlorophylla_ppb'].tolist()
 
-
-    return JSONResponse(content=data)
-
-
-@app.get("/db2")
-async def get_db(time_range: str = '24hours'):
-    db = mysql.connector.connect(**db_config)
-    query = "SELECT * FROM `WaterData`"
-    df = pd.read_sql(query, con=db)
-    db.close()
-    
-    # convert to datetime
-    df['Datetime'] = pd.to_datetime(df['Datetime'])
-    
-    # Set Datetime column as the index
-    df.set_index('Datetime', inplace=True)
-    
-    if time_range == '24hours':
-        df_range = df.tail(24)  # Retrieve the last 24 rows
-        datetime_format = '%H:%M:%S'  # Format as time only
-    elif time_range == 'week':
-        start_time = df.index.max() - DateOffset(weeks=1) + timedelta(days=1)  # Start from the beginning of the week
-        end_time = df.index.max()  # End at the latest available date
-        df_range = df[(df.index >= start_time) & (df.index <= end_time)]
-        df_range = df_range.resample('D').mean()  # Resample to daily frequency
-        datetime_format = '%Y-%m-%d'  # Format as date only
-    elif time_range == 'month':
-        start_time = df.index.max() - DateOffset(months=1) + timedelta(days=1)  # Start from the beginning of the month
-        end_time = df.index.max()  # End at the latest available date
-        df_range = df[(df.index >= start_time) & (df.index <= end_time)]
-        df_range = df_range.resample('D').mean()  # Resample to daily frequency
-        datetime_format = '%Y-%m-%d'  # Format as date only
-    else:
-        df_range = df
-        datetime_format = '%Y-%m-%d %H:%M:%S'  # Format as full date and time
-    
-    data = {}
-    data['Datetime'] = df_range.index.strftime(datetime_format).tolist()
-    data['Salinity'] = df_range['Salinity_PSU'].tolist()
-    data['Conductivity'] = df_range['Conductivity_mScm'].tolist()
-    data['Turbidity'] = df_range['Turbidity_FTU'].tolist()
-    data['SeaTemp'] = df_range['Sea_temperature_°C'].tolist()
-    data['DO'] = df_range['DO_saturation_'].tolist()
-    data['chlorophyll'] = df_range['Chlorophylla_ppb'].tolist()
 
     return JSONResponse(content=data)
 
@@ -166,124 +175,4 @@ async def get_notification():
     }
 
     return JSONResponse(content=notification)
-
-
-@app.get("/salinity")
-async def get_salinity():
-    # Load the csv file as a pandas dataframe
-    salinity_df = pd.read_csv("./data/salinity.csv")
-    # Convert the date column to datetime format
-    salinity_df['Datetime'] = pd.to_datetime(salinity_df['Datetime'])
-    # Set the date column as the index
-    salinity_df.set_index('Datetime', inplace=True)
-    # Resample by day and take the mean value of each day
-    salinity_daily = salinity_df.resample('D').mean()
-
-    # Get the data type of the index column
-    index_dtype = salinity_daily.index.dtype.name
-
-    # Convert dataframe to JSON
-    salinity_daily_json = salinity_daily.reset_index().to_json(orient="records")
-    # Parse the JSON into a list of dictionaries
-    salinity_daily_list = json.loads(salinity_daily_json)
-    # Create a list of datetime values and salinity values
-    datetime_list = [row['Datetime'] for row in salinity_daily_list]
-    salinity_list = [row['Salinity (PSU)'] for row in salinity_daily_list]
-    # Return a dictionary containing the datetime and salinity lists
-    return {'datetime': datetime_list, 'salinity': salinity_list, 'index_dtype': index_dtype}
-
-
-@app.get('/selective_data')
-async def selective_data(start_datetime: str, end_datetime: str):
-    # Connect to the MySQL database
-    db = mysql.connector.connect(**db_config)
-
-    # Get the data for each variable within the datetime range
-    query = "SELECT Datetime, Salinity_PSU FROM WaterData WHERE Datetime >= '{}' AND Datetime <= '{}'"
-    salinity_query = query.format(start_datetime, end_datetime)
-    salinity_df = pd.read_sql(salinity_query, con=db)
-    salinity_df.set_index('Datetime', inplace=True)
-
-    query = "SELECT Datetime, Turbidity_FTU FROM WaterData WHERE Datetime >= '{}' AND Datetime <= '{}'"
-    turbidity_query = query.format(start_datetime, end_datetime)
-    turbidity_df = pd.read_sql(turbidity_query, con=db)
-    turbidity_df.set_index('Datetime', inplace=True)
-
-    query = "SELECT Datetime, Sea_temperature_°C FROM WaterData WHERE Datetime >= '{}' AND Datetime <= '{}'"
-    sea_temp_query = query.format(start_datetime, end_datetime)
-    sea_temp_df = pd.read_sql(sea_temp_query, con=db)
-    sea_temp_df.set_index('Datetime', inplace=True)
-
-    query = "SELECT Datetime, DO_saturation_ FROM WaterData WHERE Datetime >= '{}' AND Datetime <= '{}'"
-    do_saturation_query = query.format(start_datetime, end_datetime)
-    do_saturation_df = pd.read_sql(do_saturation_query, con=db)
-    do_saturation_df.set_index('Datetime', inplace=True)
-
-    query = "SELECT Datetime, Chlorophylla_ppb FROM WaterData WHERE Datetime >= '{}' AND Datetime <= '{}'"
-    chlorophyll_query = query.format(start_datetime, end_datetime)
-    chlorophyll_df = pd.read_sql(chlorophyll_query, con=db)
-    chlorophyll_df.set_index('Datetime', inplace=True)
-
-    # Combine the dataframes into a single dictionary
-    output_data = {
-        'salinity': salinity_df.to_dict(),
-        'turbidity': turbidity_df.to_dict(),
-        'sea_temp': sea_temp_df.to_dict(),
-        'do_saturation': do_saturation_df.to_dict(),
-        'chlorophyll': chlorophyll_df.to_dict()
-    }
-
-    # Return data as JSON response
-    return JSONResponse(content=output_data)
-
-
-class WaterData(BaseModel):
-    Datetime: str
-    Salinity: float
-    Turbidity: float
-    SeaTemp: float
-    DOSaturation: float
-    Chlorophyll: float
-
-@app.get('/forecast')
-async def forecast():
-    db = mysql.connector.connect(**db_config)
-    query = "SELECT * FROM `WaterData`"
-    df = pd.read_sql(query, con=db)
-    db.close()
-    
-    # Convert datetime string to datetime object
-    df['Datetime'] = pd.to_datetime(df['Datetime'], format='%Y-%m-%d %H:%M:%S')
-
-    # Set Datetime as index
-    df.set_index('Datetime', inplace=True)
-
-    # Clean the input data
-    df = df.dropna()
-
-    # Generate predictions for each variable
-    salinity_pred = salinity_model.forecast(steps=7).tolist()
-    turbidity_pred = turbidity_model.forecast(steps=7).tolist()
-    sea_temp_pred = sea_temp_model.forecast(steps=7).tolist()
-    do_saturation_pred = do_saturation_model.forecast(steps=7).tolist()
-    chlorophyll_pred = chlorophyll_model.forecast(steps=7).tolist()
-
-    # Create a list of forecasted dates for the next 7 days
-    forecast_dates = pd.date_range(start=df.index[-1] + pd.DateOffset(days=1), periods=7, freq='D').strftime('%Y-%m-%d').tolist()
-
-    # Combine predicted values with forecasted dates into a list of WaterData objects
-    forecast_data = []
-    for i in range(7):
-        data = WaterData(
-            Datetime=forecast_dates[i],
-            Salinity=salinity_pred[i],
-            Turbidity=turbidity_pred[i],
-            SeaTemp=sea_temp_pred[i],
-            DOSaturation=do_saturation_pred[i],
-            Chlorophyll=chlorophyll_pred[i]
-        )
-        forecast_data.append(data)
-
-    # Return forecasted values as JSON response
-    return JSONResponse(content=[data.dict() for data in forecast_data])
 
