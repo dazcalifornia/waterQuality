@@ -1,10 +1,41 @@
 import React, { useEffect } from "react";
 import mapboxgl from "mapbox-gl";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZGl2ZXJ0enQiLCJhIjoiY2xqeGYybzZuMXVzMzNtbzZ6ZXNqaXNnZSJ9.JAb0ekG5zuG1wkDfkjCuJg"; // Replace with your Mapbox access token
 
 const MapPage = () => {
+  const features = [
+    {
+      // feature for Mapbox DC
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [100.91998, 13.19247],
+      },
+      properties: {
+        title: "Sriracha",
+      },
+    },
+    {
+      // feature for Mapbox SF
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [102.318444, 8.0265],
+      },
+      properties: {
+        title: "north bongkot",
+      },
+    },
+  ];
   useEffect(() => {
     // Create the map instance
     const map = new mapboxgl.Map({
@@ -27,33 +58,9 @@ const MapPage = () => {
             type: "geojson",
             data: {
               type: "FeatureCollection",
-              features: [
-                {
-                  // feature for Mapbox DC
-                  type: "Feature",
-                  geometry: {
-                    type: "Point",
-                    coordinates: [100.91998, 13.19247],
-                  },
-                  properties: {
-                    title: "Sriracha",
-                  },
-                },
-                {
-                  // feature for Mapbox SF
-                  type: "Feature",
-                  geometry: {
-                    type: "Point",
-                    coordinates: [102.318444, 8.0265],
-                  },
-                  properties: {
-                    title: "north bongkot",
-                  },
-                },
-              ],
+              features: features,
             },
           });
-
           // Add a symbol layer
           map.addLayer({
             id: "points",
@@ -83,7 +90,25 @@ const MapPage = () => {
           style={{ width: "100%", height: "40vh", margin: "0 auto" }}
         ></div>
       </div>
-      <p>table data</p>
+      {features.map((feature, index) => (
+        <div key={index}>
+          <Accordion style={{ marginTop: "20px" }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography>{feature.properties.title}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div>
+                <Typography>
+                  Latitude: {feature.geometry.coordinates[1]}
+                </Typography>
+                <Typography>
+                  Longitude: {feature.geometry.coordinates[0]}
+                </Typography>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+        </div>
+      ))}
     </>
   );
 };

@@ -1,6 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@mui/material";
 
 interface ForecastData {
   Datetime: string;
@@ -16,7 +23,7 @@ const ForecastPage = () => {
 
   useEffect(() => {
     axios
-      .get<ForecastData[]>('http://localhost:8000/forecast')
+      .get<ForecastData[]>("http://localhost:8000/forecast")
       .then((response) => {
         setForecastData(response.data);
       })
@@ -27,9 +34,8 @@ const ForecastPage = () => {
 
   return (
     <div>
-      <h1>Forecast</h1>
       {forecastData.length > 0 ? (
-        <TableContainer sx={{ overflowX: 'auto' }}>
+        <TableContainer sx={{ overflowX: "auto" }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -45,19 +51,19 @@ const ForecastPage = () => {
               {forecastData.map((item) => (
                 <TableRow key={item.Datetime}>
                   <TableCell>{item.Datetime}</TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
                     {item.Salinity.toFixed(2)}
                   </TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
                     {item.Turbidity.toFixed(2)}
                   </TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
                     {item.SeaTemp.toFixed(2)}
                   </TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
                     {item.DOSaturation.toFixed(2)}
                   </TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                  <TableCell sx={{ whiteSpace: "nowrap" }}>
                     {item.Chlorophyll.toFixed(2)}
                   </TableCell>
                 </TableRow>

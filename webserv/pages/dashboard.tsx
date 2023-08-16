@@ -7,6 +7,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Button,
+  Chip,
 } from "@mui/material";
 import { Bar, Line } from "react-chartjs-2";
 import GridItems from "@/components/gridItems";
@@ -36,6 +37,18 @@ const Dashboard = () => {
   const [handleCharts, setHandleCharts] = useState<any>({});
   const [expanded, setExpanded] = useState<string | false>(false);
   const [timeRange, setTimeRange] = useState<string>("");
+  const [selectedDataSource, setSelectedDataSource] = useState<string>("Src");
+
+  const timeRanges = [
+    { label: "Years", value: "" },
+    { label: "Week", value: "week" },
+    { label: "Month", value: "month" },
+    { label: "24 Hours", value: "24hours" },
+  ];
+  const dataSources = [
+    { label: "set1", value: "Src" },
+    { label: "set2", value: "northB" },
+  ];
 
   const getData = useCallback((timeRange?: string) => {
     const url = timeRange
@@ -82,8 +95,12 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    getData(timeRange);
-  }, [getData, timeRange]);
+    if (selectedDataSource === "Src") {
+      getData(timeRange);
+    } else if (selectedDataSource === "northB") {
+      console.log("northB");
+    }
+  }, [getData, timeRange, selectedDataSource]);
 
   const handleClick = (id: string) => {
     setSelectedItem(id);
@@ -119,31 +136,6 @@ const Dashboard = () => {
     setHandleCharts(testChart);
   };
 
-  const generateRainbowPastelColors = (
-    numColors: number,
-    data: number[]
-  ): string[] => {
-    const colors = [];
-    const hueStep = 180 / numColors; // Divided by 180 for cooler tones
-
-    const minValue = Math.min(...data);
-    const maxValue = Math.max(...data);
-
-    for (let i = 0; i < numColors; i++) {
-      const hue = i * hueStep;
-      const saturation = 70 + Math.random() * 10;
-
-      // Calculate lightness based on data value
-      const normalizedValue = (data[i] - minValue) / (maxValue - minValue);
-      const lightness = 60 + normalizedValue * 20; // Adjust this for desired lightness range
-
-      const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-      colors.push(color);
-    }
-
-    return colors;
-  };
-
   const calculateTrendLine = (data: number[]): number[] => {
     const n = data.length;
     const xSum = data.reduce((sum, value, index) => sum + index, 0);
@@ -161,11 +153,6 @@ const Dashboard = () => {
 
     return trendLine;
   };
-
-  const handleAccordionChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false);
-    };
 
   const handleRefresh = (selectedTimeRange: string) => {
     setTimeRange(selectedTimeRange);
@@ -203,6 +190,36 @@ const Dashboard = () => {
 
   return (
     <div>
+      <div style={{ margin: "16px" }}>
+        <div>
+          {dataSources.map((source) => (
+            <Chip
+              key={source.value}
+              label={source.label}
+              onClick={() => setSelectedDataSource(source.value)}
+              variant={
+                selectedDataSource === source.value ? "filled" : "outlined"
+              }
+              color="primary"
+              style={{ margin: "4px" }}
+            />
+          ))}
+        </div>
+      </div>
+      <div style={{ marginTop: "20px" }}>
+        <div>
+          {timeRanges.map((range) => (
+            <Chip
+              key={range.value}
+              label={range.label}
+              onClick={() => handleRefresh(range.value)}
+              variant={timeRange === range.value ? "filled" : "outlined"}
+              color="primary"
+              style={{ margin: "4px" }}
+            />
+          ))}
+        </div>
+      </div>
       <Grid container spacing={2}>
         {Object.keys(waterData).map((key) => {
           if (key !== "Datetime") {
@@ -222,26 +239,6 @@ const Dashboard = () => {
 
       {selectedItem && (
         <>
-          <div style={{ marginTop: "20px" }}>
-            <Accordion
-              expanded={expanded === "panel1"}
-              onChange={handleAccordionChange("panel1")}
-            >
-              <AccordionSummary>
-                <Typography>Time Range</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <div>
-                  <Button onClick={() => handleRefresh("")}>Years</Button>
-                  <Button onClick={() => handleRefresh("week")}>Week</Button>
-                  <Button onClick={() => handleRefresh("month")}>Month</Button>
-                  <Button onClick={() => handleRefresh("24hours")}>
-                    24 Hours
-                  </Button>
-                </div>
-              </AccordionDetails>
-            </Accordion>
-          </div>
           <div style={{ marginTop: "20px" }}>
             <Line data={handleCharts} options={chartOptions} height={400} />
           </div>
