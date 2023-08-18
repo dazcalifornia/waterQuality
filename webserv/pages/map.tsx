@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import mapboxgl from "mapbox-gl";
 import {
   Accordion,
@@ -11,38 +11,52 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZGl2ZXJ0enQiLCJhIjoiY2xqeGYybzZuMXVzMzNtbzZ6ZXNqaXNnZSJ9.JAb0ekG5zuG1wkDfkjCuJg"; // Replace with your Mapbox access token
 
+interface Feature {
+  type: "Feature";
+  geometry: {
+    type: "Point";
+    coordinates: [number, number];
+  };
+  properties: {
+    title: string;
+  };
+}
+
 const MapPage = () => {
-  const features = [
-    {
-      // feature for Mapbox DC
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [100.91998, 13.19247],
+  const features: Feature[] = useMemo(
+    () => [
+      {
+        // feature for Mapbox DC
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [100.91998, 13.19247],
+        },
+        properties: {
+          title: "Sriracha",
+        },
       },
-      properties: {
-        title: "Sriracha",
+      {
+        // feature for Mapbox SF
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [102.318444, 8.0265],
+        },
+        properties: {
+          title: "north bongkot",
+        },
       },
-    },
-    {
-      // feature for Mapbox SF
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [102.318444, 8.0265],
-      },
-      properties: {
-        title: "north bongkot",
-      },
-    },
-  ];
+    ],
+    []
+  );
   useEffect(() => {
     // Create the map instance
     const map = new mapboxgl.Map({
-      container: "map", // HTML element ID where the map will be rendered
-      style: "mapbox://styles/mapbox/streets-v11", // Mapbox style URL
-      center: [101.434391, 9.808507], // Coordinates for the specified location [longitude, latitude]
-      zoom: 4, // Initial map zoom level
+      container: "map",
+      style: "mapbox://styles/mapbox/streets-v11",
+      center: [101.434391, 9.808507],
+      zoom: 4,
       attributionControl: false,
     });
 
@@ -50,7 +64,7 @@ const MapPage = () => {
       // Add an image to use as a custom marker
       map.loadImage(
         "https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png",
-        (error, image) => {
+        (error: any, image: any) => {
           if (error) throw error;
           map.addImage("custom-marker", image);
           // Add a GeoJSON source with 2 points
@@ -80,7 +94,7 @@ const MapPage = () => {
         }
       );
     });
-  }, []);
+  }, [features]);
 
   return (
     <>

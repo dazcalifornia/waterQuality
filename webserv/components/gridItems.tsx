@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Grid,
-  Badge,
-  Box,
-  Paper,
-  Typography,
-  Collapse,
-  BadgeProps,
-} from "@mui/material";
+import { Grid, Badge, Box, Typography, BadgeProps } from "@mui/material";
 
 import {
   Chart as ChartJS,
