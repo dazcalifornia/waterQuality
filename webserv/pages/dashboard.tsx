@@ -1,15 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import {
-  Grid,
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Button,
-  Chip,
-} from "@mui/material";
-import { Bar, Line } from "react-chartjs-2";
+import { Grid, Chip, Typography } from "@mui/material";
+import { Line } from "react-chartjs-2";
 import GridItems from "@/components/gridItems";
 
 interface WaterData {
@@ -22,7 +14,24 @@ interface WaterData {
   chlorophyll: string[]; // Update type to string[]
 }
 
+interface NorthBData {
+  Datetime: Date[];
+  airTemp: number[];
+  relativeHumidity: number[];
+  atm: number[];
+  windSpeed: number[];
+  windDirect: number[];
+}
+
 const Dashboard = () => {
+  const [northBData, setNorthBData] = useState<NorthBData>({
+    Datetime: [],
+    airTemp: [],
+    relativeHumidity: [],
+    atm: [],
+    windSpeed: [],
+    windDirect: [],
+  });
   const [waterData, setWaterData] = useState<WaterData>({
     Datetime: [],
     Salinity: [],
@@ -94,33 +103,46 @@ const Dashboard = () => {
       });
   }, []);
 
+  //get NorthB data with time range using http://localhost:8000/north_bongkot_data ednpoint
+  const getNorthBData = useCallback((timeRange?: string) => {
+    const url = timeRange
+      ? `http://localhost:8000/north_bongkot_data?time_range=${timeRange}`
+      : "http://localhost:8000/north_bongkot_data";
+
+    axios.get<NorthBData>(url).then((res) => {
+      console.log("Response data:", res.data); // Add this Line
+    });
+  }, []);
+
   useEffect(() => {
     if (selectedDataSource === "Src") {
       getData(timeRange);
     } else if (selectedDataSource === "northB") {
-      console.log("northB");
+      getNorthBData(timeRange);
     }
-  }, [getData, timeRange, selectedDataSource]);
+  }, [getData, timeRange, selectedDataSource, getNorthBData]);
 
   const handleClick = (id: string) => {
     setSelectedItem(id);
-    console.log("id", id);
     const testChart = {
       labels: date,
       datasets: [
         {
           type: "bar",
           label: id,
-          data: waterData[id as keyof WaterData],
-          backgroundColor: "rgba(54, 162, 235, 0.6)", // Use dark blue color
-          borderRadius: 10, // Rounded corners for bars
+          data: waterData[id as keyof WaterData].map((value) =>
+            parseFloat(value)
+          ),
+          backgroundColor: "rgba(54, 162, 235, 0.6)",
+          borderRadius: 10,
           order: 1,
         },
         {
           type: "line",
           label: "trendLine",
-          // @ts-ignore
-          data: calculateTrendLine(waterData[id as keyof WaterData]),
+          data: calculateTrendLine(
+            waterData[id as keyof WaterData].map((value) => parseFloat(value))
+          ),
           fill: false,
           borderColor: "rgba(255,0,0,1)",
           borderWidth: 2,
@@ -192,33 +214,39 @@ const Dashboard = () => {
     <div>
       <div style={{ margin: "16px" }}>
         <div>
-          {dataSources.map((source) => (
-            <Chip
-              key={source.value}
-              label={source.label}
-              onClick={() => setSelectedDataSource(source.value)}
-              variant={
-                selectedDataSource === source.value ? "filled" : "outlined"
-              }
-              color="primary"
-              style={{ margin: "4px" }}
-            />
-          ))}
+          <>
+            {dataSources.map((source) => (
+              <Chip
+                key={source.value}
+                label={source.label}
+                onClick={() => setSelectedDataSource(source.value)}
+                variant={
+                  selectedDataSource === source.value ? "filled" : "outlined"
+                }
+                color="primary"
+                style={{ margin: "4px" }}
+              />
+            ))}
+          </>
         </div>
       </div>
       <div style={{ marginTop: "20px" }}>
-        <div>
-          {timeRanges.map((range) => (
-            <Chip
-              key={range.value}
-              label={range.label}
-              onClick={() => handleRefresh(range.value)}
-              variant={timeRange === range.value ? "filled" : "outlined"}
-              color="primary"
-              style={{ margin: "4px" }}
-            />
-          ))}
-        </div>
+        {selectedDataSource === "Src" ? (
+          <div>
+            {timeRanges.map((range) => (
+              <Chip
+                key={range.value}
+                label={range.label}
+                onClick={() => handleRefresh(range.value)}
+                variant={timeRange === range.value ? "filled" : "outlined"}
+                color="primary"
+                style={{ margin: "4px" }}
+              />
+            ))}
+          </div>
+        ) : (
+          <Typography variant="h6">North B</Typography>
+        )}
       </div>
       <Grid container spacing={2}>
         {Object.keys(waterData).map((key) => {
@@ -243,6 +271,37 @@ const Dashboard = () => {
             <Line data={handleCharts} options={chartOptions} height={400} />
           </div>
         </>
+      )}
+
+      {selectedItem && (
+        <>
+          {/* Display chart for selected water quality item */}
+          <div style={{ marginTop: "20px" }}>
+            <Line data={handleCharts} options={chartOptions} height={400} />
+          </div>
+        </>
+      )}
+      {selectedDataSource === "northB" && (
+        <div style={{ marginTop: "20px" }}>
+          {/* Display "northB" data */}
+          <Typography variant="h6">North B</Typography>
+          <Grid container spacing={2}>
+            {Object.keys(northBData).map((key) => {
+              if (key !== "Datetime") {
+                return (
+                  <GridItems
+                    key={key}
+                    id={key}
+                    handleClick={handleClick}
+                    isSelected={selectedItem === key}
+                    data={northBData}
+                  />
+                );
+              }
+              return null;
+            })}
+          </Grid>
+        </div>
       )}
     </div>
   );

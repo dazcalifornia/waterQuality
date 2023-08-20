@@ -7,10 +7,10 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Typography,
+  Chip,
 } from "@mui/material";
 import { Bar } from "react-chartjs-2";
-import ChartJS from "chart.js";
-import chartTrendline from "chartjs-plugin-trendline";
 
 interface ForecastData {
   Datetime: string;
@@ -23,6 +23,11 @@ interface ForecastData {
 
 const ForecastPage = () => {
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
+  const [selectedChart, setSelectedChart] = useState("All");
+
+  const handleChartChange = (chartname) => {
+    setSelectedChart(chartname);
+  };
 
   useEffect(() => {
     axios
@@ -91,21 +96,23 @@ const ForecastPage = () => {
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false, // Allows the chart to adjust its height
     plugins: {
       legend: {
-        position: "top" as const, // Specify the type explicitly
+        position: "top" as const,
       },
-
-      trendline: {
-        equations: [
-          {
-            type: "linear",
-            color: "red",
-            lineWidth: 2,
-            label: "Trendline",
-          },
-        ],
-      },
+    },
+  };
+  const selectedChartData = {
+    labels: labels,
+    datasets: chartData.datasets.filter((dataset) =>
+      selectedChart === "All" ? true : dataset.label === selectedChart
+    ),
+    trendlineLinear: {
+      colorMin: "red",
+      lineStyle: "dotted",
+      width: 2,
+      projection: false, // optional
     },
   };
 
@@ -113,8 +120,35 @@ const ForecastPage = () => {
     <div>
       {forecastData.length > 0 ? (
         <div>
-          <h2>Salinity Trend Chart</h2>
-          <Bar data={chartData} options={chartOptions} />
+          <Typography variant="h4" gutterBottom component="div">
+            Forecast Data
+          </Typography>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexWrap: "wrap", // Wrap chips to new line on small screens
+              gap: "10px",
+              marginBottom: "20px",
+            }}
+          >
+            <Chip
+              label="All"
+              onClick={() => handleChartChange("All")}
+              color={selectedChart === "All" ? "primary" : "default"}
+            />
+            {chartData.datasets.map((dataset) => (
+              <Chip
+                key={dataset.label}
+                label={dataset.label}
+                onClick={() => handleChartChange(dataset.label)}
+                color={selectedChart === dataset.label ? "primary" : "default"}
+              />
+            ))}
+          </div>
+          <div style={{ height: "60vh", marginBottom: "20px" }}>
+            <Bar data={selectedChartData} options={chartOptions} />
+          </div>{" "}
           <TableContainer sx={{ overflowX: "auto" }}>
             <Table>
               <TableHead>

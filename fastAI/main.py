@@ -54,6 +54,29 @@ class WaterData(BaseModel):
     Chlorophyll: float
 
 
+@app.get('/north_bongkot_data')
+async def get_north_bongkot_data():
+    # Connect to the MySQL database
+    db = mysql.connector.connect(**db_config)
+
+    # Query to fetch data from the northBongkot table
+    query = "SELECT * FROM northBongkot"
+
+    # Read data into a DataFrame
+    df = pd.read_sql(query, con=db)
+
+    # Close the database connection
+    db.close()
+
+    # Convert datetime string to datetime object
+    df['Datetime'] = pd.to_datetime(df['Datetime'])
+
+    # Convert Datetime column to strings
+    df['Datetime'] = df['Datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
+
+    # Return data as JSON response
+    return JSONResponse(content=df.to_dict(orient='records'))
+
 @app.get('/forecast')
 async def forecast():
     db = mysql.connector.connect(**db_config)
