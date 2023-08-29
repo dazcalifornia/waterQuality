@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Mitr:wght@200;400;500;700&display=swap");
 * {
   box-sizing: border-box;
   padding: 0;
@@ -10,14 +10,13 @@ body {
   max-width: 100vw;
   max-height: 100vh;
   overflow-x: hidden;
-  font-family: 'Mitr', sans-serif;
+  font-family: "Mitr", sans-serif;
 }
 
 a {
   color: inherit;
   text-decoration: none;
 }
-
 
 header {
   position: fixed;
@@ -27,7 +26,7 @@ header {
   background-color: #f1f1f1;
   padding: 20px 10px;
 }
-header h2{
+header h2 {
   color: black;
   text-align: center;
   text-decoration: none;
@@ -40,9 +39,9 @@ header + main {
 }
 main {
   font-weight: 200;
-  left:0px; 
-  right:0px; 
-  overflow:auto;
+  left: 0px;
+  right: 0px;
+  overflow: auto;
 }
 
 footer {
@@ -55,16 +54,16 @@ footer {
   background-color: #f1f1f1;
 }
 
-footer nav{
+footer nav {
   position: relative;
   width: full;
   height: 70px;
   border-radius: 40px;
   background: #fff;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-footer nav ul{
+footer nav ul {
   position: absolute;
   top: 0;
   left: 0;
@@ -72,7 +71,7 @@ footer nav ul{
   display: flex;
 }
 
-footer nav ul li{
+footer nav ul li {
   position: relative;
   list-style: none;
   width: 70px;
@@ -80,7 +79,7 @@ footer nav ul li{
   z-index: 1;
 }
 
-footer nav ul li p{
+footer nav ul li p {
   position: relative;
   display: flex;
   justify-content: center;
@@ -93,7 +92,7 @@ footer nav ul li p{
   z-index: 3;
 }
 
-footer nav ul li p .icon{
+footer nav ul li p .icon {
   position: relative;
   display: block;
   line-height: 75px;
@@ -101,7 +100,7 @@ footer nav ul li p .icon{
   transition: 0.5s;
 }
 
-footer nav ul li.active p .icon{
+footer nav ul li.active p .icon {
   color: #fff;
 }
 
@@ -113,27 +112,26 @@ footer nav ul li p .title {
   position: absolute;
   top: -70%px;
   left: 50%;
-  transform: translate(-50%,15%);
+  transform: translate(-50%, 15%);
   width: auto;
   background: #fff;
   padding: 5px 10px;
   border-radius: 5px;
   transition: 0.5s;
   opacity: 0;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   visibility: hidden;
 }
 
-
-footer nav ul li:hover p .title{
+footer nav ul li:hover p .title {
   top: -100%;
   visibility: visible;
   transfrom: translate(-50%, 50%);
 }
 
-footer ul li p .title::before{
+footer ul li p .title::before {
   position: absolute;
-  content: '';
+  content: "";
   left: 50%;
   bottom: -8px;
   width: 12px;
@@ -143,70 +141,86 @@ footer ul li p .title::before{
   background-color: #fff;
 }
 
-footer ul .indicator{
+footer ul .indicator {
   position: absolute;
   left: 0;
   width: 70px;
   height: 70px;
-  transition: all 0,5s;
+  transition: all 0, 5s;
 }
 
-footer ul .indicator::before{
+footer ul .indicator::before {
   position: absolute;
-  content: '';
+  content: "";
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: rgba(0,0,0,0.1);
+  background-color: rgba(0, 0, 0, 0.1);
   transition: all 0.5s;
 }
 
-footer ul li.nth-child(1).active ~ .indicator{
+footer ul li.nth-child(1).active ~ .indicator {
   transform: translateX(calc(70px * 0));
 }
 
-footer ul li.nth-child(2).active ~ .indicator{
+footer ul li.nth-child(2).active ~ .indicator {
   transform: translateX(calc(70px * 1));
 }
 
-footer ul li.nth-child(3).active ~ .indicator{
+footer ul li.nth-child(3).active ~ .indicator {
   transform: translateX(calc(70px * 2));
 }
 
-footer ul li.nth-child(4).active ~ .indicator{
+footer ul li.nth-child(4).active ~ .indicator {
   transform: translateX(calc(70px * 3));
 }
 
-footer ul li.nth-child(5).active ~ .indicator{
+footer ul li.nth-child(5).active ~ .indicator {
   transform: translateX(calc(70px * 4));
 }
 
-footer ul li:nth-child(1):hover ~ .indicator::before{
+footer ul li:nth-child(1):hover ~ .indicator::before {
   background-color: #ff0057;
   transform: translate(-50%, -50%) scale(1);
 }
 
-footer ul li:nth-child(2):hover ~ .indicator::before{
+footer ul li:nth-child(2):hover ~ .indicator::before {
   background-color: #00d4ff;
   transform: translate(-50%, -50%) scale(1);
 }
 
-footer ul li:nth-child(3):hover ~ .indicator::before{
+footer ul li:nth-child(3):hover ~ .indicator::before {
   background-color: #00ff9d;
   transform: translate(-50%, -50%) scale(1);
 }
 
-footer ul li:nth-child(4):hover ~ .indicator::before{
+footer ul li:nth-child(4):hover ~ .indicator::before {
   background-color: #ffea00;
   transform: translate(-50%, -50%) scale(1);
 }
 
-footer ul li:nth-child(5):hover ~ .indicator::before{
+footer ul li:nth-child(5):hover ~ .indicator::before {
   background-color: #ff00c8;
   transform: translate(-50%, -50%) scale(1);
 }
 
+.accordion {
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
 
+.accordion.danger {
+  background-color: #ffebee; /* Red background for danger */
+}
+
+.accordion.moderated {
+  background-color: #fff9c4; /* Yellow background for moderated */
+}
+
+/* Styles for icons */
+.MuiSvgIcon-root {
+  margin-right: 10px;
+}

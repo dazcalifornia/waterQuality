@@ -2,6 +2,30 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Grid, Chip, Typography } from "@mui/material";
 import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale, // Add this import
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+  BarElement,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale, // Register the CategoryScale
+  LinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement
+);
 import GridItems from "@/components/gridItems";
 
 interface WaterData {
@@ -15,19 +39,19 @@ interface WaterData {
 }
 
 interface NorthBData {
-  Datetime: Date[];
-  airTemp: number[];
-  relativeHumidity: number[];
-  atm: number[];
-  windSpeed: number[];
-  windDirect: number[];
+  Datetime: string[];
+  airTemp: string[];
+  relativehumid: string[];
+  atm: string[];
+  windSpeed: string[];
+  windDirect: string[];
 }
 
 const Dashboard = () => {
   const [northBData, setNorthBData] = useState<NorthBData>({
     Datetime: [],
     airTemp: [],
-    relativeHumidity: [],
+    relativehumid: [],
     atm: [],
     windSpeed: [],
     windDirect: [],
@@ -44,7 +68,6 @@ const Dashboard = () => {
   const [date, setDate] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [handleCharts, setHandleCharts] = useState<any>({});
-  const [expanded, setExpanded] = useState<string | false>(false);
   const [timeRange, setTimeRange] = useState<string>("");
   const [selectedDataSource, setSelectedDataSource] = useState<string>("Src");
 
@@ -55,19 +78,20 @@ const Dashboard = () => {
     { label: "24 Hours", value: "24hours" },
   ];
   const dataSources = [
-    { label: "set1", value: "Src" },
-    { label: "set2", value: "northB" },
+    { label: "Sriracha", value: "Src" },
+    { label: "North Bongkot", value: "northB" },
   ];
 
   const getData = useCallback((timeRange?: string) => {
     const url = timeRange
-      ? `http://localhost:8000/db2?time_range=${timeRange}`
+      ? `http://localhost:8000/db3?time_range=${timeRange}`
       : "http://localhost:8000/db";
 
     axios
       .get<WaterData>(url)
       .then((res) => {
         const { Datetime, ...restData } = res.data;
+
         let formattedData: Omit<WaterData, "Datetime">;
 
         if (timeRange === "24hours") {
@@ -80,6 +104,26 @@ const Dashboard = () => {
             chlorophyll: restData.chlorophyll,
           };
           setDate(Datetime);
+        } else if (timeRange === "week") {
+          formattedData = {
+            Salinity: restData.Salinity.slice(0, 7),
+            Turbidity: restData.Turbidity.slice(0, 7),
+            Conductivity: restData.Conductivity.slice(0, 7),
+            DO: restData.DO.slice(0, 7),
+            SeaTemp: restData.SeaTemp.slice(0, 7),
+            chlorophyll: restData.chlorophyll.slice(0, 7),
+          };
+          setDate(Datetime.slice(0, 7));
+        } else if (timeRange === "month") {
+          formattedData = {
+            Salinity: restData.Salinity.slice(0, 30),
+            Turbidity: restData.Turbidity.slice(0, 30),
+            Conductivity: restData.Conductivity.slice(0, 30),
+            DO: restData.DO.slice(0, 30),
+            SeaTemp: restData.SeaTemp.slice(0, 30),
+            chlorophyll: restData.chlorophyll.slice(0, 30),
+          };
+          setDate(Datetime.slice(0, 30));
         } else {
           formattedData = {
             Salinity: restData.Salinity.slice(0, 12),
@@ -96,23 +140,85 @@ const Dashboard = () => {
           ...prevData,
           ...formattedData,
         }));
-        console.log(formattedData);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  //get NorthB data with time range using http://localhost:8000/north_bongkot_data ednpoint
-  const getNorthBData = useCallback((timeRange?: string) => {
-    const url = timeRange
-      ? `http://localhost:8000/north_bongkot_data?time_range=${timeRange}`
-      : "http://localhost:8000/north_bongkot_data";
+  const getNorthBData = useCallback(
+    (timeRange?: string) => {
+      const url = timeRange
+        ? `http://localhost:8000/north_bongkot_data?time_range=${timeRange}`
+        : `http://localhost:8000/north_bongkot_data?time_range=""`;
 
-    axios.get<NorthBData>(url).then((res) => {
-      console.log("Response data:", res.data); // Add this Line
-    });
-  }, []);
+      axios
+        .get<NorthBData>(url)
+        .then((res) => {
+          const { Datetime, ...dataItem } = res.data;
+
+          let formattedData: Omit<NorthBData, "Datetime">;
+
+          // const formattedData: Omit<NorthBData, "Datetime"> = {
+          //   airTemp: dataItem.airTemp,
+          //   relativehumid: dataItem.relativehumid,
+          //   atm: dataItem.atm,
+          //   windSpeed: dataItem.windSpeed,
+          //   windDirect: dataItem.windDirect,
+          // };
+          // setDate(Datetime);
+
+          if (timeRange === "month") {
+            formattedData = {
+              airTemp: dataItem.airTemp,
+              relativehumid: dataItem.relativehumid,
+              atm: dataItem.atm,
+              windSpeed: dataItem.windSpeed,
+              windDirect: dataItem.windDirect,
+            };
+            setDate(Datetime);
+          } else if (timeRange === "week") {
+            formattedData = {
+              airTemp: dataItem.airTemp.slice(0, 7),
+              relativehumid: dataItem.relativehumid.slice(0, 7),
+              atm: dataItem.atm.slice(0, 7),
+              windSpeed: dataItem.windSpeed.slice(0, 7),
+              windDirect: dataItem.windDirect.slice(0, 7),
+            };
+            setDate(Datetime.slice(0, 7));
+          } else if (timeRange === "24hours") {
+            formattedData = {
+              airTemp: dataItem.airTemp,
+              relativehumid: dataItem.relativehumid,
+              atm: dataItem.atm,
+              windSpeed: dataItem.windSpeed,
+              windDirect: dataItem.windDirect,
+            };
+            setDate(Datetime);
+          } else {
+            formattedData = {
+              airTemp: dataItem.airTemp.slice(0, 12),
+              relativehumid: dataItem.relativehumid.slice(0, 12),
+              atm: dataItem.atm.slice(0, 12),
+              windSpeed: dataItem.windSpeed.slice(0, 12),
+              windDirect: dataItem.windDirect.slice(0, 12),
+            };
+            setDate(Datetime.slice(0, 12));
+          }
+
+          setNorthBData((prevData) => ({
+            ...prevData,
+            ...formattedData,
+          }));
+
+          console.log("North Bongkot Data:", res.data);
+        })
+        .catch((err) => {
+          console.log("Error:", err);
+        });
+    },
+    [setNorthBData] // Assuming setNorthBData is a state updater function
+  );
 
   useEffect(() => {
     if (selectedDataSource === "Src") {
@@ -124,38 +230,76 @@ const Dashboard = () => {
 
   const handleClick = (id: string) => {
     setSelectedItem(id);
-    const testChart = {
-      labels: date,
-      datasets: [
-        {
-          type: "bar",
-          label: id,
-          data: waterData[id as keyof WaterData].map((value) =>
-            parseFloat(value)
-          ),
-          backgroundColor: "rgba(54, 162, 235, 0.6)",
-          borderRadius: 10,
-          order: 1,
-        },
-        {
-          type: "line",
-          label: "trendLine",
-          data: calculateTrendLine(
-            waterData[id as keyof WaterData].map((value) => parseFloat(value))
-          ),
-          fill: false,
-          borderColor: "rgba(255,0,0,1)",
-          borderWidth: 2,
-          pointRadius: 0,
-          pointHoverRadius: 4,
-          pointBackgroundColor: "rgba(255,0,0,1)",
-          pointBorderColor: "rgba(255,0,0,1)",
-          pointBorderWidth: 2,
-          order: 0,
-        },
-      ],
-    };
-    setHandleCharts(testChart);
+    if (selectedDataSource === "Src") {
+      let waterChart = {
+        labels: date,
+        datasets: [
+          {
+            type: "bar",
+            label: id,
+            data: waterData[id as keyof WaterData].map((value) =>
+              parseFloat(value)
+            ),
+            backgroundColor: "rgba(54, 162, 235, 0.6)",
+            borderRadius: 10,
+            order: 1,
+          },
+          {
+            type: "line",
+            label: "trendLine",
+            data: calculateTrendLine(
+              waterData[id as keyof WaterData].map((value) => parseFloat(value))
+            ),
+            fill: false,
+            borderColor: "rgba(255,0,0,1)",
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+            pointBackgroundColor: "rgba(255,0,0,1)",
+            pointBorderColor: "rgba(255,0,0,1)",
+            pointBorderWidth: 2,
+            order: 0,
+          },
+        ],
+      };
+      setHandleCharts(waterChart);
+    } else if (selectedDataSource === "northB") {
+      console.log("northB");
+      let northBChart = {
+        labels: date,
+        datasets: [
+          {
+            type: "bar",
+            label: id,
+            data: northBData[id as keyof NorthBData].map((value) =>
+              parseFloat(value)
+            ),
+            backgroundColor: "rgba(54, 162, 235, 0.6)",
+            borderRadius: 10,
+            order: 1,
+          },
+          {
+            type: "line",
+            label: "trendLine",
+            data: calculateTrendLine(
+              northBData[id as keyof NorthBData].map((value) =>
+                parseFloat(value)
+              )
+            ),
+            fill: false,
+            borderColor: "rgba(255,0,0,1)",
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+            pointBackgroundColor: "rgba(255,0,0,1)",
+            pointBorderColor: "rgba(255,0,0,1)",
+            pointBorderWidth: 2,
+            order: 0,
+          },
+        ],
+      };
+      setHandleCharts(northBChart);
+    }
   };
 
   const calculateTrendLine = (data: number[]): number[] => {
@@ -231,61 +375,57 @@ const Dashboard = () => {
         </div>
       </div>
       <div style={{ marginTop: "20px" }}>
-        {selectedDataSource === "Src" ? (
-          <div>
-            {timeRanges.map((range) => (
-              <Chip
-                key={range.value}
-                label={range.label}
-                onClick={() => handleRefresh(range.value)}
-                variant={timeRange === range.value ? "filled" : "outlined"}
-                color="primary"
-                style={{ margin: "4px" }}
-              />
-            ))}
-          </div>
-        ) : (
-          <Typography variant="h6">North B</Typography>
-        )}
+        {timeRanges.map((range) => (
+          <Chip
+            key={range.value}
+            label={range.label}
+            onClick={() => handleRefresh(range.value)}
+            variant={timeRange === range.value ? "filled" : "outlined"}
+            color="primary"
+            style={{ margin: "4px" }}
+          />
+        ))}
       </div>
       <Grid container spacing={2}>
-        {Object.keys(waterData).map((key) => {
-          if (key !== "Datetime") {
-            return (
-              <GridItems
-                key={key}
-                id={key}
-                handleClick={handleClick}
-                isSelected={selectedItem === key}
-                data={waterData}
-              />
-            );
-          }
-          return null;
-        })}
-      </Grid>
+        {selectedDataSource === "Src" ? (
+          <>
+            {Object.keys(waterData).map((key) => {
+              if (key !== "Datetime") {
+                let unit = ""; // Define the unit based on the data type
+                if (key === "Salinity") {
+                  unit = "mg/l";
+                } else if (key === "SeaTemp") {
+                  unit = "°C";
+                } else if (key === "pH") {
+                  unit = "pH";
+                } else if (key === "DO") {
+                  unit = "mg/l";
+                } else if (key === "Turbidity") {
+                  unit = "NTU";
+                } else if (key === "Chlorophyll") {
+                  unit = "µg/l";
+                } else if (key === "Conductivity") {
+                  unit = "µS/cm";
+                } else if (key === "chlorophyll") {
+                  unit = "µg/l";
+                }
 
-      {selectedItem && (
-        <>
-          <div style={{ marginTop: "20px" }}>
-            <Line data={handleCharts} options={chartOptions} height={400} />
-          </div>
-        </>
-      )}
-
-      {selectedItem && (
-        <>
-          {/* Display chart for selected water quality item */}
-          <div style={{ marginTop: "20px" }}>
-            <Line data={handleCharts} options={chartOptions} height={400} />
-          </div>
-        </>
-      )}
-      {selectedDataSource === "northB" && (
-        <div style={{ marginTop: "20px" }}>
-          {/* Display "northB" data */}
-          <Typography variant="h6">North B</Typography>
-          <Grid container spacing={2}>
+                return (
+                  <GridItems
+                    key={key}
+                    id={key}
+                    handleClick={handleClick}
+                    isSelected={selectedItem === key}
+                    data={waterData}
+                    unit={unit} // Pass the unit prop
+                  />
+                );
+              }
+              return null;
+            })}
+          </>
+        ) : (
+          <>
             {Object.keys(northBData).map((key) => {
               if (key !== "Datetime") {
                 return (
@@ -300,8 +440,16 @@ const Dashboard = () => {
               }
               return null;
             })}
-          </Grid>
-        </div>
+          </>
+        )}
+      </Grid>
+
+      {selectedItem && (
+        <>
+          <div style={{ marginTop: "20px" }}>
+            <Line data={handleCharts} options={chartOptions} height={400} />
+          </div>
+        </>
       )}
     </div>
   );

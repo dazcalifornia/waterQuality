@@ -7,25 +7,12 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Warning, Error } from "@mui/icons-material";
 
 interface Notification {
-  Salinity: {
+  [key: string]: {
     percent_diff: number;
-  };
-  Conductivity: {
-    percent_diff: number;
-  };
-  Turbidity: {
-    percent_diff: number;
-  };
-  SeaTemp: {
-    percent_diff: number;
-  };
-  DO: {
-    percent_diff: number;
-  };
-  chlorophyll: {
-    percent_diff: number;
+    status: string;
   };
 }
 
@@ -34,7 +21,7 @@ const NotiPage = () => {
 
   useEffect(() => {
     axios
-      .get<Notification>("http://localhost:8000/noti")
+      .get<Notification>("http://localhost:8000/noti2")
       .then((res) => {
         setNotification(res.data);
       })
@@ -43,46 +30,39 @@ const NotiPage = () => {
       });
   }, []);
 
-  const getSeverity = (
-    value: number,
-    ranges: [number, number],
-    dangerThreshold: number
-  ): string => {
-    if (value >= dangerThreshold) {
+  const getSeverity = (status: string): string => {
+    if (status.includes("Danger")) {
       return "danger";
+    } else if (status.includes("Moderated")) {
+      return "moderated";
+    } else {
+      return "ok";
     }
-    const [lower, upper] = ranges;
-    if (value >= lower && value <= upper) {
-      return "warning";
-    }
-    return "notify";
   };
 
   const renderNotification = (
     label: string,
-    value: number | null,
-    ranges: [number, number],
-    dangerThreshold: number
+    percentDiff: number,
+    status: string
   ) => {
-    const severity =
-      value !== null ? getSeverity(value, ranges, dangerThreshold) : "";
-
-    if (severity === "notify") {
-      return null; // Hide notifications with severity 'notify'
+    if (!status) {
+      return null; // Hide notifications with empty status
     }
 
+    const severity = getSeverity(status);
+
     return (
-      <Accordion key={label}>
+      <Accordion key={label} className={`accordion ${severity}`}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>{label}</Typography>
+          {severity === "danger" && <Error />}
+          {severity === "moderated" && <Warning />}
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            {value !== null
-              ? `${label}: ${value.toFixed(2)}%`
-              : `${label}: N/A`}
+            {`${label}: ${percentDiff.toFixed(2)}%`}
             <br />
-            {value !== null && <span>Severity: {severity}</span>}
+            <span>Status: {status}</span>
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -94,36 +74,8 @@ const NotiPage = () => {
       <h1>Notification</h1>
       {notification && (
         <div>
-          {renderNotification(
-            "Salinity",
-            notification.Salinity?.percent_diff,
-            [0, 30],
-            40
-          )}
-          {renderNotification(
-            "Conductivity",
-            notification.Conductivity?.percent_diff,
-            [0, 0],
-            0
-          )}
-          {renderNotification(
-            "Turbidity",
-            notification.Turbidity?.percent_diff,
-            [26.68, 133],
-            133
-          )}
-          {renderNotification(
-            "SeaTemp",
-            notification.SeaTemp?.percent_diff,
-            [0, 0],
-            0
-          )}
-          {renderNotification("DO", notification.DO?.percent_diff, [0, 0], 0)}
-          {renderNotification(
-            "Chlorophyll",
-            notification.chlorophyll?.percent_diff,
-            [0, 0],
-            0
+          {Object.entries(notification).map(([label, data]) =>
+            renderNotification(label, data.percent_diff, data.status)
           )}
         </div>
       )}

@@ -14,7 +14,7 @@ const shapeStyles = {
 
 const shapeCircleStyles = { borderRadius: "50%" };
 
-interface GridItemsProps {
+interface AirGridsProps {
   id: string;
   handleClick: (id: string) => void;
   isSelected: boolean;
@@ -22,40 +22,39 @@ interface GridItemsProps {
   unit: string;
 }
 
-const GridItems: React.FC<GridItemsProps> = ({
+const AirGrids: React.FC<AirGridsProps> = ({
   id,
   handleClick,
   isSelected,
   data,
   unit,
 }) => {
-  const dataForId = data[id] || [];
-  const latestData =
-    dataForId.length > 0 ? dataForId[dataForId.length - 1] : undefined;
+  const latestHourData = data.mean_per_hour[id];
+  const latestData = latestHourData ? latestHourData[id] : undefined;
+  let diff = 0;
 
-  const circle = (
-    <Box component="span" sx={{ ...shapeStyles, ...shapeCircleStyles }}>
-      <Typography variant="body1">
-        {latestData !== undefined ? latestData.toFixed(2) : ""}
-      </Typography>
-    </Box>
-  );
-
-  const diff =
-    latestData && dataForId[dataForId.length - 2]
-      ? Math.abs(latestData - dataForId[dataForId.length - 2])
-      : null;
+  if (latestData) {
+    const hourKeys = Object.keys(latestHourData);
+    if (hourKeys.length > 1) {
+      const latestHour = hourKeys[hourKeys.length - 1];
+      const prevHour = hourKeys[hourKeys.length - 2];
+      if (
+        latestHourData[latestHour][id] !== undefined &&
+        latestHourData[prevHour][id] !== undefined
+      ) {
+        diff = latestHourData[latestHour][id] - latestHourData[prevHour][id];
+      }
+    }
+  }
 
   let badgeColor: BadgeProps["color"] = "default";
 
-  if (diff !== null) {
-    if (diff >= 10) {
-      badgeColor = "error";
-    } else if (diff >= 5) {
-      badgeColor = "warning";
-    } else {
-      badgeColor = "success";
-    }
+  if (diff >= 10) {
+    badgeColor = "error";
+  } else if (diff >= 5) {
+    badgeColor = "warning";
+  } else {
+    badgeColor = "success";
   }
 
   return (
@@ -75,14 +74,18 @@ const GridItems: React.FC<GridItemsProps> = ({
         <Badge
           color={badgeColor}
           overlap="circular"
-          badgeContent={diff !== null ? `${diff.toFixed(2)}` : ""}
+          badgeContent={diff.toFixed(2)}
           anchorOrigin={{
             vertical: "bottom",
             horizontal: "left",
           }}
           style={{ transform: "scale(1.5)", fontSize: "10px" }}
         >
-          {circle}
+          <Box component="span" sx={{ ...shapeStyles, ...shapeCircleStyles }}>
+            <Typography variant="body1">
+              {latestData !== undefined ? latestData.toFixed(2) : ""}
+            </Typography>
+          </Box>
         </Badge>
         <Typography style={{ marginTop: 20 }}>
           {id} {unit}
@@ -92,4 +95,4 @@ const GridItems: React.FC<GridItemsProps> = ({
   );
 };
 
-export default GridItems;
+export default AirGrids;
