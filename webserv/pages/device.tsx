@@ -26,7 +26,7 @@ const DevicePage = () => {
   useEffect(() => {
     // Fetch the JSON data from the server
     axios
-      .get("http://localhost:8000/device")
+      .get("https://cactus.franx.dev:8000/device")
       .then((response) => {
         setDeviceData(response.data);
       })

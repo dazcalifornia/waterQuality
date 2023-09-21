@@ -47,7 +47,7 @@ export default function Home() {
   const [date, setDate] = useState<string[]>([]);
   
   const getData = useCallback(() => {
-    axios.get<WaterData>('http://localhost:8000/db')
+    axios.get<WaterData>('https//cactus.franx.dev:8000:8000/db')
       .then(res => {
         const data = res.data;
         setWaterData(data);

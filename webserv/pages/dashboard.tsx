@@ -85,8 +85,8 @@ const Dashboard = () => {
 
   const getData = useCallback((timeRange?: string) => {
     const url = timeRange
-      ? `http://45.154.24.33:8000/db3?time_range=${timeRange}`
-      : "http://45.154.24.33:8000/db";
+      ? `https://cactus.franx.dev:8000/db3?time_range=${timeRange}`
+      : "https://cactus.franx.dev:8000/db";
 
     axios
       .get<WaterData>(url)
@@ -150,8 +150,8 @@ const Dashboard = () => {
   const getNorthBData = useCallback(
     (timeRange?: string) => {
       const url = timeRange
-        ? `http://45.154.24.33:8000/north_bongkot_data?time_range=${timeRange}`
-        : `http://45.154.24.33:8000/north_bongkot_data?time_range=""`;
+        ? `https://cactus.franx.dev:8000/north_bongkot_data?time_range=${timeRange}`
+        : `https://cactus.franx.dev:8000/north_bongkot_data?time_range=""`;
 
       axios
         .get<NorthBData>(url)

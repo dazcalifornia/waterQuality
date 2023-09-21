@@ -31,7 +31,7 @@ const ForecastPage = () => {
 
   useEffect(() => {
     axios
-      .get<ForecastData[]>("http://localhost:8000/forecast")
+      .get<ForecastData[]>("https://cactus.franx.dev:8000/forecast")
       .then((response) => {
         setForecastData(response.data);
       })

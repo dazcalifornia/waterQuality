@@ -30,7 +30,7 @@ const MyAppBar = ({ currentPage }: any) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/noti2")
+      .get("https://cactus.franx.dev:8000/noti2")
       .then((res) => {
         const responseData: { [key: string]: Notification } = res.data;
         const filteredEntries = Object.entries(responseData).filter(
