@@ -98,24 +98,26 @@ const MapPage = () => {
 
   return (
     <>
-      <div style={{ width: "100%", overflow: "hidden" }}>
-        <div
-          id="map"
-          style={{ width: "100%", height: "40vh", margin: "0 auto" }}
-        ></div>
+      <div className="map-container">
+        <div id="map" className="map"></div>
       </div>
       {features.map((feature, index) => (
-        <div key={index}>
-          <Accordion style={{ marginTop: "20px" }}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{feature.properties.title}</Typography>
+        <div key={index} className="accordion-container">
+          <Accordion className="custom-accordion">
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon className="expand-icon" />}
+              className="accordion-summary"
+            >
+              <Typography className="accordion-title">
+                {feature.properties.title}
+              </Typography>
             </AccordionSummary>
-            <AccordionDetails>
-              <div>
-                <Typography>
+            <AccordionDetails className="accordion-details">
+              <div className="details-content">
+                <Typography className="detail-text">
                   Latitude: {feature.geometry.coordinates[1]}
                 </Typography>
-                <Typography>
+                <Typography className="detail-text">
                   Longitude: {feature.geometry.coordinates[0]}
                 </Typography>
               </div>

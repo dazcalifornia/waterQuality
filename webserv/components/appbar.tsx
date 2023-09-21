@@ -14,7 +14,10 @@ interface Notification {
 const MyAppBar = ({ currentPage }: any) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  const [notifications, setNotifications] = useState<
+    Record<string, Notification>
+  >({});
 
   const typographyStyles = {
     flexGrow: 1,
@@ -29,8 +32,9 @@ const MyAppBar = ({ currentPage }: any) => {
     axios
       .get("http://localhost:8000/noti2")
       .then((res) => {
-        const filteredEntries = Object.entries(res.data).filter(
-          ([_, data]) => (data.status as any) !== ""
+        const responseData: { [key: string]: Notification } = res.data;
+        const filteredEntries = Object.entries(responseData).filter(
+          ([_, data]) => data.status !== ""
         );
 
         const objectNamesWithStatus = filteredEntries.map(
@@ -38,7 +42,7 @@ const MyAppBar = ({ currentPage }: any) => {
         );
 
         setNotificationCount(objectNamesWithStatus.length);
-        setNotifications(res.data);
+        setNotifications(responseData);
       })
       .catch((err) => {
         console.log(err);

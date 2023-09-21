@@ -25,7 +25,7 @@ const ForecastPage = () => {
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
   const [selectedChart, setSelectedChart] = useState("All");
 
-  const handleChartChange = (chartname) => {
+  const handleChartChange = (chartname: any) => {
     setSelectedChart(chartname);
   };
 

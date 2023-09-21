@@ -1,18 +1,36 @@
 import React from "react";
-import { Grid, Badge, Box, Typography, BadgeProps } from "@mui/material";
+import { Grid, Badge, Box, Typography, BadgeProps, Paper } from "@mui/material";
+import { styled } from "@mui/system";
 
 const shapeStyles = {
   bgcolor: "white",
   width: 50,
   height: 50,
-  borderRadius: "50%",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  border: "2px solid  #073763",
+  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
 };
 
-const shapeCircleStyles = { borderRadius: "50%" };
+const shapeBoxStyles = { borderRadius: 8 };
+
+const FluentTypography = styled(Typography)(() => ({
+  fontSize: "12px",
+  fontWeight: 600,
+  color: "rgba(0, 0, 0, 0.87)",
+  textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+}));
+
+const StyledBadge = styled(Badge)(() => ({
+  background: `linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1))`,
+  boxShadow: `0 4px 8px rgba(0, 0, 0, 0.2)`,
+  borderRadius: "50%",
+  transform: "scale(1.5)",
+  transition: "box-shadow 0.3s",
+  "&.selected": {
+    boxShadow: `0 4px 10px rgba(6, 199, 85, 0.4)`,
+  },
+}));
 
 interface GridItemsProps {
   id: string;
@@ -33,12 +51,12 @@ const GridItems: React.FC<GridItemsProps> = ({
   const latestData =
     dataForId.length > 0 ? dataForId[dataForId.length - 1] : undefined;
 
-  const circle = (
-    <Box component="span" sx={{ ...shapeStyles, ...shapeCircleStyles }}>
-      <Typography variant="body1">
+  const box = (
+    <Paper elevation={3} sx={{ ...shapeStyles, ...shapeBoxStyles }}>
+      <FluentTypography>
         {latestData !== undefined ? latestData.toFixed(2) : ""}
-      </Typography>
-    </Box>
+      </FluentTypography>
+    </Paper>
   );
 
   const diff =
@@ -67,12 +85,10 @@ const GridItems: React.FC<GridItemsProps> = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: 16,
-          border: isSelected ? "2px solid #000" : "2px solid transparent",
-          borderRadius: 8,
+          padding: 12,
         }}
       >
-        <Badge
+        <StyledBadge
           color={badgeColor}
           overlap="circular"
           badgeContent={diff !== null ? `${diff.toFixed(2)}` : ""}
@@ -80,10 +96,10 @@ const GridItems: React.FC<GridItemsProps> = ({
             vertical: "bottom",
             horizontal: "left",
           }}
-          style={{ transform: "scale(1.5)", fontSize: "10px" }}
+          className={isSelected ? "selected" : ""}
         >
-          {circle}
-        </Badge>
+          {box}
+        </StyledBadge>
         <Typography style={{ marginTop: 20 }}>
           {id} {unit}
         </Typography>

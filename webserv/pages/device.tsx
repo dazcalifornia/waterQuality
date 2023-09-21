@@ -20,7 +20,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Air, Cloud, ArrowRight, Add } from "@mui/icons-material";
 
 const DevicePage = () => {
-  const [deviceData, setDeviceData] = useState({});
+  const [deviceData, setDeviceData] = useState<{ [key: string]: string[] }>({});
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {

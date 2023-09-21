@@ -27,6 +27,7 @@ ChartJS.register(
   BarElement
 );
 import GridItems from "@/components/gridItems";
+import BoxCard from "@/components/boxCard";
 
 interface WaterData {
   Datetime: string[];
@@ -84,8 +85,8 @@ const Dashboard = () => {
 
   const getData = useCallback((timeRange?: string) => {
     const url = timeRange
-      ? `http://localhost:8000/db3?time_range=${timeRange}`
-      : "http://localhost:8000/db";
+      ? `http://45.154.24.33:8000/db3?time_range=${timeRange}`
+      : "http://45.154.24.33:8000/db";
 
     axios
       .get<WaterData>(url)
@@ -149,8 +150,8 @@ const Dashboard = () => {
   const getNorthBData = useCallback(
     (timeRange?: string) => {
       const url = timeRange
-        ? `http://localhost:8000/north_bongkot_data?time_range=${timeRange}`
-        : `http://localhost:8000/north_bongkot_data?time_range=""`;
+        ? `http://45.154.24.33:8000/north_bongkot_data?time_range=${timeRange}`
+        : `http://45.154.24.33:8000/north_bongkot_data?time_range=""`;
 
       axios
         .get<NorthBData>(url)
@@ -210,8 +211,6 @@ const Dashboard = () => {
             ...prevData,
             ...formattedData,
           }));
-
-          console.log("North Bongkot Data:", res.data);
         })
         .catch((err) => {
           console.log("Error:", err);
@@ -241,7 +240,6 @@ const Dashboard = () => {
               parseFloat(value)
             ),
             backgroundColor: "rgba(54, 162, 235, 0.6)",
-            borderRadius: 10,
             order: 1,
           },
           {
@@ -275,7 +273,6 @@ const Dashboard = () => {
               parseFloat(value)
             ),
             backgroundColor: "rgba(54, 162, 235, 0.6)",
-            borderRadius: 10,
             order: 1,
           },
           {
@@ -333,7 +330,7 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: `${selectedItem} Chart By ${timeRange}`,
+        text: `${selectedItem} Chart`,
       },
     },
     scales: {
@@ -374,7 +371,8 @@ const Dashboard = () => {
           </>
         </div>
       </div>
-      <div style={{ marginTop: "20px" }}>
+
+      <div style={{ marginTop: "20px", display: "flex", gap: "8px" }}>
         {timeRanges.map((range) => (
           <Chip
             key={range.value}
@@ -382,11 +380,12 @@ const Dashboard = () => {
             onClick={() => handleRefresh(range.value)}
             variant={timeRange === range.value ? "filled" : "outlined"}
             color="primary"
-            style={{ margin: "4px" }}
+            style={{ flex: 1, margin: "4px" }}
           />
         ))}
       </div>
-      <Grid container spacing={2}>
+
+      <Grid container spacing={2} style={{ marginTop: 4 }}>
         {selectedDataSource === "Src" ? (
           <>
             {Object.keys(waterData).map((key) => {
@@ -411,14 +410,16 @@ const Dashboard = () => {
                 }
 
                 return (
-                  <GridItems
-                    key={key}
-                    id={key}
-                    handleClick={handleClick}
-                    isSelected={selectedItem === key}
-                    data={waterData}
-                    unit={unit} // Pass the unit prop
-                  />
+                  <>
+                    <GridItems
+                      key={key}
+                      id={key}
+                      handleClick={handleClick}
+                      isSelected={selectedItem === key}
+                      data={waterData}
+                      unit={unit} // Pass the unit prop
+                    />
+                  </>
                 );
               }
               return null;
@@ -428,6 +429,18 @@ const Dashboard = () => {
           <>
             {Object.keys(northBData).map((key) => {
               if (key !== "Datetime") {
+                let unit = ""; // Define the unit based on the data type
+                if (key === "airTemp") {
+                  unit = "°C";
+                } else if (key === "relativehumid") {
+                  unit = "%";
+                } else if (key === "atm") {
+                  unit = "Pa";
+                } else if (key === "windSpeed") {
+                  unit = "m/s";
+                } else if (key === "windDirect") {
+                  unit = "360°";
+                }
                 return (
                   <GridItems
                     key={key}
@@ -435,6 +448,7 @@ const Dashboard = () => {
                     handleClick={handleClick}
                     isSelected={selectedItem === key}
                     data={northBData}
+                    unit={unit} // Pass the unit prop
                   />
                 );
               }
