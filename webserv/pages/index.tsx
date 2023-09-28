@@ -1,11 +1,14 @@
-import React from 'react';
+import React from "react";
 
-import Main from '../components/main';
+import Main from "../components/main";
 
 export default function Home() {
   return (
     <>
-       <Main />
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
+      <Main />
     </>
-  )
+  );
 }
