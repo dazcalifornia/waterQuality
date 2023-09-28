@@ -19,6 +19,36 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Air, Cloud, ArrowRight, Add } from "@mui/icons-material";
 
+const formatDeviceDataName = (dataName: any) => {
+  switch (dataName) {
+    case "Conductivity_mScm":
+      return "Conductivity";
+    case "Turbitity_FTU":
+      return "Turbidity";
+    case "Sea_temperature_°C":
+      return "Sea Temperature";
+    case "Chlorophylla_ppb":
+      return "Chlorophyll-a";
+    case "DO_saturation_":
+      return "Dissolved Oxygen Saturation";
+    case "airTemp":
+      return "Air Temperature";
+    case "relativehumid":
+      return "Relative Humidity";
+    case "atm":
+      return "Atmospheric Pressure";
+    case "windSpeed":
+      return "Wind Speed";
+    case "windDirect":
+      return "Wind Direction";
+
+    default:
+      return dataName.replace(/_/g, " ").replace(/\w\S*/g, (word: any) => {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      });
+  }
+};
+
 const DevicePage = () => {
   const [deviceData, setDeviceData] = useState<{ [key: string]: string[] }>({});
   const [modalOpen, setModalOpen] = useState(false);
@@ -29,6 +59,7 @@ const DevicePage = () => {
       .get("https://cactus.franx.dev:8000/device")
       .then((response) => {
         setDeviceData(response.data);
+        console.log("deviceData: ", deviceData);
       })
       .catch((error) => {
         console.error("Error fetching device data:", error);
@@ -77,17 +108,20 @@ const DevicePage = () => {
               Data in this table:
             </Typography>
             <List>
-              {columns.map((column) => (
-                <ListItem
-                  key={column}
-                  style={{ marginBottom: "5px", fontSize: "16px" }}
-                >
-                  <ListItemIcon>
-                    <ArrowRight />
-                  </ListItemIcon>
-                  <ListItemText primary={column} />
-                </ListItem>
-              ))}
+              {columns
+                .filter((column) => column !== "Datetime") // Filter out "Datetime" column
+                .map((column) => (
+                  <ListItem
+                    key={column}
+                    style={{ marginBottom: "5px", fontSize: "16px" }}
+                  >
+                    <ListItemIcon>
+                      <ArrowRight />
+                    </ListItemIcon>
+                    <ListItemText primary={formatDeviceDataName(column)} />{" "}
+                    {/* Format the column name */}
+                  </ListItem>
+                ))}
             </List>
             <Typography variant="body2">
               {`You can add more data to this table by clicking the "Add Data" but
