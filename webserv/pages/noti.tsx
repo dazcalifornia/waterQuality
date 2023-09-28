@@ -71,7 +71,6 @@ const NotiPage = () => {
 
   return (
     <div>
-      <h1>Notification</h1>
       {notification && (
         <div>
           {Object.entries(notification).map(([label, data]) =>

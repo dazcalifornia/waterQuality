@@ -44,7 +44,7 @@ const MapPage = () => {
           coordinates: [102.318444, 8.0265],
         },
         properties: {
-          title: "north bongkot",
+          title: "North Bongkot",
         },
       },
     ],

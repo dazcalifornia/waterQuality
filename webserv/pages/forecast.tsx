@@ -79,7 +79,7 @@ const ForecastPage = () => {
         borderWidth: 1,
       },
       {
-        label: "Chlorophyll",
+        label: "Chlorophyll-a",
         data: chlorophyllData,
         backgroundColor: "rgba(54,162,235,0.2)",
         borderColor: "rgba(54,162,235,1)",

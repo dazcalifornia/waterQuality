@@ -14,26 +14,29 @@ type PageComponents = {
 };
 
 const pageComponents: PageComponents = {
-  dashboard: DashboardPage,
-  device: DevicePage,
-  forecast: ForecastPage,
-  map: MapPage,
-  notifications: NotiPage,
+  Dashboard: DashboardPage,
+  MyDevice: DevicePage,
+  Forecast: ForecastPage,
+  Map: MapPage,
+  Notifications: NotiPage,
 };
 
 const Main = () => {
-  const [currentPage, setCurrentPage] = useState("dashboard");
+  const [currentPage, setCurrentPage] = useState("Dashboard");
 
   const handleChangePage = (event: any, newValue: any) => {
     setCurrentPage(newValue);
   };
 
   const PageComponent = pageComponents[currentPage];
+  const changePage = (newPage: string) => {
+    setCurrentPage(newPage);
+  };
 
   return (
     <div>
       <title>Water quality </title>
-      <MyAppBar currentPage={currentPage} />
+      <MyAppBar currentPage={currentPage} changePage={changePage} />
       <div className="content-container">
         <PageComponent />
       </div>

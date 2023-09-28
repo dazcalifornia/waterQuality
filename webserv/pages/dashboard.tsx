@@ -4,7 +4,7 @@ import { Grid, Chip, Typography } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
-  CategoryScale, // Add this import
+  CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
@@ -16,7 +16,7 @@ import {
 } from "chart.js";
 
 ChartJS.register(
-  CategoryScale, // Register the CategoryScale
+  CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
@@ -26,17 +26,18 @@ ChartJS.register(
   Legend,
   BarElement
 );
+
 import GridItems from "@/components/gridItems";
 import BoxCard from "@/components/boxCard";
 
 interface WaterData {
   Datetime: string[];
-  Salinity: string[]; // Update type to string[]
-  Turbidity: string[]; // Update type to string[]
-  Conductivity: string[]; // Update type to string[]
-  DO: string[]; // Update type to string[]
-  SeaTemp: string[]; // Update type to string[]
-  chlorophyll: string[]; // Update type to string[]
+  Salinity: string[];
+  Turbidity: string[];
+  Conductivity: string[];
+  DO: string[];
+  SeaTemp: string[];
+  chlorophyll: string[];
 }
 
 interface NorthBData {
@@ -47,6 +48,25 @@ interface NorthBData {
   windSpeed: string[];
   windDirect: string[];
 }
+
+const filledChipClass = "filled-chip";
+const outlinedChipClass = "outlined-chip";
+
+const dataNameMapping: Record<string, string> = {
+  chlorophyll: "chlorophyll-a",
+  SeaTemp: "Sea Temp",
+  //wind
+  airTemp: "Air Temp",
+  atm: "Atm",
+  windSpeed: "Wind Speed",
+  windDirect: "Wind Direct",
+  relativehumid: "RU",
+  // Add more mappings for other data names if needed
+};
+
+const formatDataName = (dataName: string): string => {
+  return dataNameMapping[dataName] || dataName;
+};
 
 const Dashboard = () => {
   const [northBData, setNorthBData] = useState<NorthBData>({
@@ -73,7 +93,7 @@ const Dashboard = () => {
   const [selectedDataSource, setSelectedDataSource] = useState<string>("Src");
 
   const timeRanges = [
-    { label: "Years", value: "" },
+    { label: "Year", value: "" },
     { label: "Week", value: "week" },
     { label: "Month", value: "month" },
     { label: "24 Hours", value: "24hours" },
@@ -160,15 +180,6 @@ const Dashboard = () => {
 
           let formattedData: Omit<NorthBData, "Datetime">;
 
-          // const formattedData: Omit<NorthBData, "Datetime"> = {
-          //   airTemp: dataItem.airTemp,
-          //   relativehumid: dataItem.relativehumid,
-          //   atm: dataItem.atm,
-          //   windSpeed: dataItem.windSpeed,
-          //   windDirect: dataItem.windDirect,
-          // };
-          // setDate(Datetime);
-
           if (timeRange === "month") {
             formattedData = {
               airTemp: dataItem.airTemp,
@@ -216,7 +227,7 @@ const Dashboard = () => {
           console.log("Error:", err);
         });
     },
-    [setNorthBData] // Assuming setNorthBData is a state updater function
+    [setNorthBData]
   );
 
   useEffect(() => {
@@ -229,13 +240,14 @@ const Dashboard = () => {
 
   const handleClick = (id: string) => {
     setSelectedItem(id);
+    const formattedId = formatDataName(id); // Format the data name
     if (selectedDataSource === "Src") {
       let waterChart = {
         labels: date,
         datasets: [
           {
             type: "bar",
-            label: id,
+            label: formattedId, // Use the formatted data name here
             data: waterData[id as keyof WaterData].map((value) =>
               parseFloat(value)
             ),
@@ -268,7 +280,7 @@ const Dashboard = () => {
         datasets: [
           {
             type: "bar",
-            label: id,
+            label: formattedId, // Use the formatted data name here
             data: northBData[id as keyof NorthBData].map((value) =>
               parseFloat(value)
             ),
@@ -277,7 +289,7 @@ const Dashboard = () => {
           },
           {
             type: "line",
-            label: "trendLine",
+            label: "Trend line",
             data: calculateTrendLine(
               northBData[id as keyof NorthBData].map((value) =>
                 parseFloat(value)
@@ -330,7 +342,7 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: `${selectedItem} Chart`,
+        text: `${selectedItem}`,
       },
     },
     scales: {
@@ -353,23 +365,29 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div style={{ margin: "16px" }}>
-        <div>
-          <>
-            {dataSources.map((source) => (
-              <Chip
-                key={source.value}
-                label={source.label}
-                onClick={() => setSelectedDataSource(source.value)}
-                variant={
-                  selectedDataSource === source.value ? "filled" : "outlined"
-                }
-                color="primary"
-                style={{ margin: "4px" }}
-              />
-            ))}
-          </>
-        </div>
+      <div style={{ marginTop: "20px", display: "flex", gap: "8px" }}>
+        {dataSources.map((source) => (
+          <Chip
+            key={source.value}
+            label={source.label}
+            onClick={() => setSelectedDataSource(source.value)}
+            className={
+              selectedDataSource === source.value
+                ? filledChipClass
+                : outlinedChipClass
+            }
+            style={{
+              backgroundColor:
+                selectedDataSource === source.value ? "#073763" : "transparent",
+              color: selectedDataSource === source.value ? "white" : "#073763",
+              border:
+                selectedDataSource === source.value
+                  ? "none"
+                  : "1px solid #073763",
+              margin: "0 4px 0 4px",
+            }}
+          />
+        ))}
       </div>
 
       <div style={{ marginTop: "20px", display: "flex", gap: "8px" }}>
@@ -378,9 +396,16 @@ const Dashboard = () => {
             key={range.value}
             label={range.label}
             onClick={() => handleRefresh(range.value)}
-            variant={timeRange === range.value ? "filled" : "outlined"}
-            color="primary"
-            style={{ flex: 1, margin: "4px" }}
+            className={
+              timeRange === range.value ? filledChipClass : outlinedChipClass
+            }
+            style={{
+              backgroundColor:
+                timeRange === range.value ? "#073763" : "transparent",
+              color: timeRange === range.value ? "white" : "#073763",
+              border: timeRange === range.value ? "none" : "1px solid #073763",
+              margin: "0 4px 0 4px",
+            }}
           />
         ))}
       </div>
@@ -409,6 +434,7 @@ const Dashboard = () => {
                   unit = "µg/l";
                 }
 
+                const formattedKey = formatDataName(key); // Format the data name
                 return (
                   <>
                     <GridItems
@@ -417,7 +443,8 @@ const Dashboard = () => {
                       handleClick={handleClick}
                       isSelected={selectedItem === key}
                       data={waterData}
-                      unit={unit} // Pass the unit prop
+                      unit={unit}
+                      dataName={formattedKey} // Pass the formatted data name as prop
                     />
                   </>
                 );
@@ -441,6 +468,7 @@ const Dashboard = () => {
                 } else if (key === "windDirect") {
                   unit = "360°";
                 }
+                const formattedKey = formatDataName(key); // Format the data name
                 return (
                   <GridItems
                     key={key}
@@ -448,7 +476,8 @@ const Dashboard = () => {
                     handleClick={handleClick}
                     isSelected={selectedItem === key}
                     data={northBData}
-                    unit={unit} // Pass the unit prop
+                    unit={unit}
+                    dataName={formattedKey} // Pass the formatted data name as prop
                   />
                 );
               }

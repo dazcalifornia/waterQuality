@@ -38,6 +38,7 @@ interface GridItemsProps {
   isSelected: boolean;
   data: any;
   unit: string;
+  dataName: string;
 }
 
 const GridItems: React.FC<GridItemsProps> = ({
@@ -46,6 +47,7 @@ const GridItems: React.FC<GridItemsProps> = ({
   isSelected,
   data,
   unit,
+  dataName,
 }) => {
   const dataForId = data[id] || [];
   const latestData =
@@ -100,8 +102,11 @@ const GridItems: React.FC<GridItemsProps> = ({
         >
           {box}
         </StyledBadge>
-        <Typography style={{ marginTop: 20 }}>
-          {id} {unit}
+        <Typography style={{ marginTop: 20, fontSize: "15px" }}>
+          {dataName}
+        </Typography>
+        <Typography style={{ marginTop: 5, fontSize: "10px" }}>
+          {unit}
         </Typography>
       </div>
     </Grid>
