@@ -33,10 +33,10 @@ const NotiPage = () => {
   const formatLabel = (label: string): string => {
     console.log(label);
     // Format the label here, e.g., change "Chlorophyll" to "Chlorophyll-a"
-    if (label === "Chlorophyll") {
+    if (label === "Chlorophylla_ppb") {
       return "Chlorophyll-a";
     }
-    if (label === "Dissolved Oxygen") {
+    if (label === "DO_saturation_") {
       return "Dissolved Oxygen (mg/L)";
     }
     if (label === "Turbidity_FTU") {
@@ -47,6 +47,9 @@ const NotiPage = () => {
     }
     if (label === "Salinity_PSU") {
       return "Salinity (PSU)";
+    }
+    if (label === "Sea_temperature_°C") {
+      return "Sea temperature (°C)";
     }
 
     // Convert to lowercase
