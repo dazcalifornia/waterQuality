@@ -21,7 +21,7 @@ const MyAppBar = ({ currentPage, changePage }: any) => {
   const [notifications, setNotifications] = useState<
     Record<string, Notification>
   >({});
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Added state for drawer
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const typographyStyles = {
     flexGrow: 1,
@@ -30,7 +30,7 @@ const MyAppBar = ({ currentPage, changePage }: any) => {
 
   const appBarStyles = {
     backgroundColor: "#073763",
-    zIndex: 1400, // Increased zIndex to ensure AppBar is above the Drawer
+    zIndex: 1400,
   };
 
   useEffect(() => {
@@ -75,7 +75,6 @@ const MyAppBar = ({ currentPage, changePage }: any) => {
     );
   };
 
-  // Toggle the drawer
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
@@ -85,7 +84,6 @@ const MyAppBar = ({ currentPage, changePage }: any) => {
       <AppBar position="fixed" sx={appBarStyles}>
         <Toolbar>
           <div onClick={toggleDrawer}>
-            {/* Hamburger icon with 16px size */}
             <div style={{ fontSize: "24px" }}>&#9776;</div>
           </div>
           <Typography variant="h6" sx={typographyStyles}>
@@ -94,7 +92,6 @@ const MyAppBar = ({ currentPage, changePage }: any) => {
           <div
             onClick={() => {
               setShowNotifications(!showNotifications);
-              // Change the page to Notifications when the button is clicked
               changePage("Notifications");
             }}
           >
@@ -104,12 +101,11 @@ const MyAppBar = ({ currentPage, changePage }: any) => {
           </div>
         </Toolbar>
       </AppBar>
-      {/* Drawer */}
       <Drawer
         anchor="left"
         open={isDrawerOpen}
         onClose={toggleDrawer}
-        style={{ zIndex: 1300, paddingTop: "200px" }} // Added zIndex to ensure Drawer is below AppBar
+        style={{ zIndex: 1300, paddingTop: "200px", width: "300px" }} // Adjust the width here
       >
         <List>
           <div
@@ -121,24 +117,23 @@ const MyAppBar = ({ currentPage, changePage }: any) => {
               paddingTop: "100px",
             }}
           >
-            <p style={{ fontSize: "24px", fontWeight: "bold" }}>Powered by</p>
+            <p style={{ fontSize: "20px", fontWeight: "bold" }}>Powered by</p>
             <div
               style={{
                 display: "flex",
                 margin: "10px",
-
                 gap: "4px",
               }}
             >
               <img
                 src="ptt.png"
                 alt="Image 1"
-                style={{ width: "100px", height: "100px", marginRight: "10px" }}
+                style={{ width: "80px", height: "80px", marginRight: "10px" }}
               />
               <img
                 src="SSN.png"
                 alt="Image 2"
-                style={{ width: "100px", height: "100px" }}
+                style={{ width: "80px", height: "80px" }}
               />
             </div>
             <hr

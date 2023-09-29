@@ -35,7 +35,6 @@ const Main = () => {
 
   return (
     <div>
-      <title>Water quality </title>
       <MyAppBar currentPage={currentPage} changePage={changePage} />
       <div className="content-container">
         <PageComponent />

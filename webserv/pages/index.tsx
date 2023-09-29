@@ -5,9 +5,6 @@ import Main from "../components/main";
 export default function Home() {
   return (
     <>
-      <head>
-        <link rel="manifest" href="/manifest.json" />
-      </head>
       <Main />
     </>
   );

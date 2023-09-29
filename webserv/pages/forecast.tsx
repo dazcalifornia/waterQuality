@@ -20,6 +20,8 @@ interface ForecastData {
   DOSaturation: number;
   Chlorophyll: number;
 }
+const filledChipClass = "filled-chip";
+const outlinedChipClass = "outlined-chip";
 
 const ForecastPage = () => {
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
@@ -120,9 +122,6 @@ const ForecastPage = () => {
     <div>
       {forecastData.length > 0 ? (
         <div>
-          <Typography variant="h4" gutterBottom component="div">
-            Forecast Data
-          </Typography>
           <div
             style={{
               display: "flex",
@@ -135,14 +134,35 @@ const ForecastPage = () => {
             <Chip
               label="All"
               onClick={() => handleChartChange("All")}
-              color={selectedChart === "All" ? "primary" : "default"}
+              className={
+                selectedChart === "All" ? filledChipClass : outlinedChipClass
+              }
+              style={{
+                backgroundColor:
+                  selectedChart === "All" ? "#073763" : "transparent",
+                color: selectedChart === "All" ? "white" : "#073763",
+                border: selectedChart === "All" ? "none" : "1px solid #073763",
+              }}
             />
             {chartData.datasets.map((dataset) => (
               <Chip
                 key={dataset.label}
                 label={dataset.label}
                 onClick={() => handleChartChange(dataset.label)}
-                color={selectedChart === dataset.label ? "primary" : "default"}
+                className={
+                  selectedChart === dataset.label
+                    ? filledChipClass
+                    : outlinedChipClass
+                }
+                style={{
+                  backgroundColor:
+                    selectedChart === dataset.label ? "#073763" : "transparent",
+                  color: selectedChart === dataset.label ? "white" : "#073763",
+                  border:
+                    selectedChart === dataset.label
+                      ? "none"
+                      : "1px solid #073763",
+                }}
               />
             ))}
           </div>

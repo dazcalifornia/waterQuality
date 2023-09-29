@@ -53,7 +53,7 @@ const filledChipClass = "filled-chip";
 const outlinedChipClass = "outlined-chip";
 
 const dataNameMapping: Record<string, string> = {
-  chlorophyll: "chlorophyll-a",
+  chlorophyll: "Chlorophyll-a",
   SeaTemp: "Sea Temp",
   //wind
   airTemp: "Air Temp",
@@ -256,7 +256,7 @@ const Dashboard = () => {
           },
           {
             type: "line",
-            label: "trendLine",
+            label: "Trend Line",
             data: calculateTrendLine(
               waterData[id as keyof WaterData].map((value) => parseFloat(value))
             ),

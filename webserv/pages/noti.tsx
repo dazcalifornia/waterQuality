@@ -30,6 +30,29 @@ const NotiPage = () => {
       });
   }, []);
 
+  const formatLabel = (label: string): string => {
+    console.log(label);
+    // Format the label here, e.g., change "Chlorophyll" to "Chlorophyll-a"
+    if (label === "Chlorophyll") {
+      return "Chlorophyll-a";
+    }
+    if (label === "Dissolved Oxygen") {
+      return "Dissolved Oxygen (mg/L)";
+    }
+    if (label === "Turbidity_FTU") {
+      return "Turbidity (FTU)";
+    }
+    if (label === "Conductivity_mScm") {
+      return "Conductivity (mS/cm)";
+    }
+    if (label === "Salinity_PSU") {
+      return "Salinity (PSU)";
+    }
+
+    // Convert to lowercase
+    return label.charAt(0).toLowerCase() + label.slice(1);
+  };
+
   const getSeverity = (status: string): string => {
     if (status.includes("Danger")) {
       return "danger";
@@ -50,17 +73,18 @@ const NotiPage = () => {
     }
 
     const severity = getSeverity(status);
+    const formattedLabel = formatLabel(label);
 
     return (
       <Accordion key={label} className={`accordion ${severity}`}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography>{label}</Typography>
+          <Typography>{formattedLabel}</Typography>
           {severity === "danger" && <Error />}
           {severity === "moderated" && <Warning />}
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            {`${label}: ${percentDiff.toFixed(2)}%`}
+            {`${formattedLabel}: ${percentDiff.toFixed(2)}%`}
             <br />
             <span>Status: {status}</span>
           </Typography>
