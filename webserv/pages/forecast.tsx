@@ -9,6 +9,7 @@ import {
   TableCell,
   Typography,
   Chip,
+  Divider,
 } from "@mui/material";
 import { Bar } from "react-chartjs-2";
 
@@ -169,6 +170,7 @@ const ForecastPage = () => {
           <div style={{ height: "60vh", marginBottom: "20px" }}>
             <Bar data={selectedChartData} options={chartOptions} />
           </div>{" "}
+          <Divider style={{ margin: "20px" }} />
           <TableContainer sx={{ overflowX: "auto" }}>
             <Table>
               <TableHead>

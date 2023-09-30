@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Grid, Chip, Typography } from "@mui/material";
+import { Grid, Chip, Typography, Divider } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -409,6 +409,8 @@ const Dashboard = () => {
           />
         ))}
       </div>
+
+      <Divider textAlign="left" style={{ margin: "20px 0 0 20px" }} />
 
       <Grid container spacing={2} style={{ marginTop: 4 }}>
         {selectedDataSource === "Src" ? (

@@ -37,19 +37,19 @@ const NotiPage = () => {
       return "Chlorophyll-a";
     }
     if (label === "DO_saturation_") {
-      return "Dissolved Oxygen (mg/L)";
+      return "Dissolved Oxygen";
     }
     if (label === "Turbidity_FTU") {
-      return "Turbidity (FTU)";
+      return "Turbidity";
     }
     if (label === "Conductivity_mScm") {
-      return "Conductivity (mS/cm)";
+      return "Conductivity";
     }
     if (label === "Salinity_PSU") {
-      return "Salinity (PSU)";
+      return "Salinity";
     }
     if (label === "Sea_temperature_°C") {
-      return "Sea temperature (°C)";
+      return "Sea temperature";
     }
 
     // Convert to lowercase

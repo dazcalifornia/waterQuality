@@ -23,7 +23,7 @@ const formatDeviceDataName = (dataName: any) => {
   switch (dataName) {
     case "Conductivity_mScm":
       return "Conductivity";
-    case "Turbitity_FTU":
+    case "Turbidity_FTU":
       return "Turbidity";
     case "Sea_temperature_°C":
       return "Sea Temperature";

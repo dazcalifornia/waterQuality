@@ -105,9 +105,12 @@ const MyAppBar = ({ currentPage, changePage }: any) => {
         anchor="left"
         open={isDrawerOpen}
         onClose={toggleDrawer}
-        style={{ zIndex: 1300, paddingTop: "200px", width: "300px" }} // Adjust the width here
+        style={{
+          zIndex: 1300,
+          paddingTop: "200px",
+        }}
       >
-        <List>
+        <List style={{ width: "300px" }}>
           <div
             style={{
               display: "flex",
@@ -117,18 +120,19 @@ const MyAppBar = ({ currentPage, changePage }: any) => {
               paddingTop: "100px",
             }}
           >
-            <p style={{ fontSize: "20px", fontWeight: "bold" }}>Powered by</p>
+            <p style={{ fontSize: "20px", fontWeight: "normal" }}>Powered by</p>
             <div
               style={{
                 display: "flex",
                 margin: "10px",
-                gap: "4px",
+                gap: "40px",
+                justifyContent: "space-between",
               }}
             >
               <img
                 src="ptt.png"
                 alt="Image 1"
-                style={{ width: "80px", height: "80px", marginRight: "10px" }}
+                style={{ width: "80px", height: "80px" }}
               />
               <img
                 src="SSN.png"
