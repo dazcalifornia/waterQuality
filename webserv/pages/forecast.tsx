@@ -27,12 +27,17 @@ const outlinedChipClass = "outlined-chip";
 const ForecastPage = () => {
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
   const [selectedChart, setSelectedChart] = useState("All");
+  const [slectedSeries, setSelectedSeries] = useState("week");
 
   const handleChartChange = (chartname: any) => {
     setSelectedChart(chartname);
   };
 
-  useEffect(() => {
+  const handleSeriesChange = (seriesname: any) => {
+    setSelectedSeries(seriesname);
+  };
+
+  const getForecastData = async () => {
     axios
       .get<ForecastData[]>("https://cactus.franx.dev:8000/forecast")
       .then((response) => {
@@ -41,7 +46,26 @@ const ForecastPage = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  };
+  const getForecastDataMonth = async () => {
+    axios
+      .get<ForecastData[]>("https://cactus.franx.dev:8000/forecast1month")
+      .then((response) => {
+        setForecastData(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    if (slectedSeries === "week") {
+      getForecastData();
+    } else if (slectedSeries === "month") {
+      console.log("month");
+      getForecastDataMonth();
+    }
+  }, [slectedSeries]);
 
   const labels = forecastData.map((item) => item.Datetime);
   const salinityData = forecastData.map((item) => item.Salinity);
@@ -99,10 +123,19 @@ const ForecastPage = () => {
 
   const chartOptions = {
     responsive: true,
-    maintainAspectRatio: false, // Allows the chart to adjust its height
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top" as const,
+      },
+      datalabels: {
+        display: false, // Hide data labels
+      },
+      trendlineLinear: {
+        colorMin: "red",
+        lineStyle: "dotted",
+        width: 2,
+        projection: false,
       },
     },
   };
@@ -115,10 +148,9 @@ const ForecastPage = () => {
       colorMin: "red",
       lineStyle: "dotted",
       width: 2,
-      projection: false, // optional
+      projection: false,
     },
   };
-
   return (
     <div>
       {forecastData.length > 0 ? (
@@ -132,6 +164,34 @@ const ForecastPage = () => {
               marginBottom: "20px",
             }}
           >
+            <Chip
+              label="Week"
+              onClick={() => handleSeriesChange("week")}
+              className={
+                slectedSeries === "week" ? filledChipClass : outlinedChipClass
+              }
+              style={{
+                backgroundColor:
+                  slectedSeries === "week" ? "#073763" : "transparent",
+                color: slectedSeries === "week" ? "white" : "#073763",
+                border: slectedSeries === "week" ? "none" : "1px solid #073763",
+              }}
+            />
+            <Chip
+              label="Month"
+              onClick={() => handleSeriesChange("month")}
+              className={
+                slectedSeries === "month" ? filledChipClass : outlinedChipClass
+              }
+              style={{
+                backgroundColor:
+                  slectedSeries === "month" ? "#073763" : "transparent",
+                color: slectedSeries === "month" ? "white" : "#073763",
+                border:
+                  slectedSeries === "month" ? "none" : "1px solid #073763",
+              }}
+            />
+            <Divider orientation="vertical" flexItem />
             <Chip
               label="All"
               onClick={() => handleChartChange("All")}

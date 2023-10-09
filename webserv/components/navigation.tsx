@@ -34,7 +34,7 @@ const Navigation = ({ currentPage, handleChangePage }: any) => {
       />
       <BottomNavigationAction label="Map" value="Map" icon={<MapIcon />} />
       <BottomNavigationAction
-        label="Forecasts"
+        label="Forecast"
         value="Forecast"
         icon={<UpdateIcon />}
       />

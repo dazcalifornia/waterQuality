@@ -153,6 +153,52 @@ def fetch_data(time_range):
 
     return mean_per_hour_dict
 
+@app.get('/forecast1month')
+async def forecast():
+    db = mysql.connector.connect(**db_config)
+    query = "SELECT * FROM `WaterData`"
+    df = pd.read_sql(query, con=db)
+    db.close()
+
+    # Convert datetime string to datetime object
+    df['Datetime'] = pd.to_datetime(df['Datetime'].str.replace(':', ''), format='%Y-%m-%d %H%M%S%z')
+
+    # Set Datetime as index
+    df.set_index('Datetime', inplace=True)
+
+    # Clean the input data
+    df = df.dropna()
+
+    # Calculate the forecast range for the next month
+    end_date = df.index.max() + pd.DateOffset(months=1)
+    forecast_range = pd.date_range(start=df.index.max(), end=end_date, freq='D')
+
+    # Generate predictions for each variable for the next month
+    salinity_pred = salinity_model.forecast(steps=len(forecast_range)).tolist()
+    turbidity_pred = turbidity_model.forecast(steps=len(forecast_range)).tolist()
+    sea_temp_pred = sea_temp_model.forecast(steps=len(forecast_range)).tolist()
+    do_saturation_pred = do_saturation_model.forecast(steps=len(forecast_range)).tolist()
+    chlorophyll_pred = chlorophyll_model.forecast(steps=len(forecast_range)).tolist()
+
+    # Create a list of forecasted dates for the next month
+    forecast_dates = forecast_range.strftime('%Y-%m-%d').tolist()
+
+    # Combine predicted values with forecasted dates into a list of WaterData objects
+    forecast_data = []
+    for i in range(len(forecast_range)):
+        data = WaterData(
+            Datetime=forecast_dates[i],
+            Salinity=salinity_pred[i],
+            Turbidity=turbidity_pred[i],
+            SeaTemp=sea_temp_pred[i],
+            DOSaturation=do_saturation_pred[i],
+            Chlorophyll=chlorophyll_pred[i]
+        )
+        forecast_data.append(data)
+
+    # Return forecasted values as JSON response
+    return JSONResponse(content=[data.dict() for data in forecast_data])
+
 @app.get("/north_bongkot_data")
 def get_north_bongkot_data_by_time_range(time_range: str):
     try:
