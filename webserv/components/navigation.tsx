@@ -12,7 +12,7 @@ import UpdateIcon from "@mui/icons-material/Update";
 const Navigation = ({ currentPage, handleChangePage }: any) => {
   return (
     <BottomNavigation
-      style={{ position: "fixed", bottom: 0, width: "100%" }}
+      style={{ position: "fixed", bottom: 0, height: "90px", width: "100%" }}
       value={currentPage}
       onChange={handleChangePage}
       showLabels
@@ -32,11 +32,17 @@ const Navigation = ({ currentPage, handleChangePage }: any) => {
         value="Notifications"
         icon={<NotificationsIcon />}
       />
-      <BottomNavigationAction label="Map" value="Map" icon={<MapIcon />} />
       <BottomNavigationAction
-        label="Forecast"
+        label="Map"
+        value="Map"
+        icon={<MapIcon />}
+        style={{ alignItems: "center" }}
+      />
+      <BottomNavigationAction
+        label="Forecasts"
         value="Forecast"
         icon={<UpdateIcon />}
+        style={{ alignItems: "center" }}
       />
     </BottomNavigation>
   );
