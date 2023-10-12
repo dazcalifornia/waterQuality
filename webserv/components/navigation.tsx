@@ -39,7 +39,7 @@ const Navigation = ({ currentPage, handleChangePage }: any) => {
         style={{ alignItems: "center" }}
       />
       <BottomNavigationAction
-        label="Forecasts"
+        label="Forecast"
         value="Forecast"
         icon={<UpdateIcon />}
         style={{ alignItems: "center" }}
