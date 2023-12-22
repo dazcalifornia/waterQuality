@@ -39,7 +39,7 @@ const ForecastPage = () => {
 
   const getForecastData = async () => {
     axios
-      .get<ForecastData[]>("https://cactus.franx.dev:8000/forecast")
+      .get<ForecastData[]>("https://server.franx.dev/wqdb/forecast")
       .then((response) => {
         setForecastData(response.data);
       })
@@ -49,7 +49,7 @@ const ForecastPage = () => {
   };
   const getForecastDataMonth = async () => {
     axios
-      .get<ForecastData[]>("https://cactus.franx.dev:8000/forecast1month")
+      .get<ForecastData[]>("https://server.franx.dev/wqdb/forecast1month")
       .then((response) => {
         setForecastData(response.data);
       })

@@ -56,7 +56,7 @@ const DevicePage = () => {
   useEffect(() => {
     // Fetch the JSON data from the server
     axios
-      .get("https://cactus.franx.dev:8000/device")
+      .get("https://server.franx.dev/wqdb/device")
       .then((response) => {
         setDeviceData(response.data);
         console.log("deviceData: ", deviceData);

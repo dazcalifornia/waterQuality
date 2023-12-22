@@ -21,7 +21,7 @@ const NotiPage = () => {
 
   useEffect(() => {
     axios
-      .get<Notification>("https://cactus.franx.dev:8000/noti2")
+      .get<Notification>("https://server.franx.dev/wqdb/noti2")
       .then((res) => {
         setNotification(res.data);
       })
