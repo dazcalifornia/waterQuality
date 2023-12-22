@@ -54,7 +54,6 @@ class WaterData(BaseModel):
     DOSaturation: float
     Chlorophyll: float
 
-
 def air_test(time_range):
 
     try:
@@ -153,7 +152,7 @@ def fetch_data(time_range):
 
     return mean_per_hour_dict
 
-@app.get('/forecast1month')
+@app.get('/wqdb/forecast1month', )
 async def forecast():
     db = mysql.connector.connect(**db_config)
     query = "SELECT * FROM `WaterData`"
@@ -199,7 +198,7 @@ async def forecast():
     # Return forecasted values as JSON response
     return JSONResponse(content=[data.dict() for data in forecast_data])
 
-@app.get("/north_bongkot_data")
+@app.get("/wqdb/north_bongkot_data")
 def get_north_bongkot_data_by_time_range(time_range: str):
     try:
         data = air_test(time_range)
@@ -211,7 +210,7 @@ def get_north_bongkot_data_by_time_range(time_range: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get('/forecast')
+@app.get('/wqdb/forecast')
 async def forecast():
     db = mysql.connector.connect(**db_config)
     query = "SELECT * FROM `WaterData`"
@@ -254,7 +253,7 @@ async def forecast():
     return JSONResponse(content=[data.dict() for data in forecast_data])
 
 
-@app.get("/db")
+@app.get("/wqdb/db")
 async def get_db():
     db = mysql.connector.connect(**db_config)
     query = "SELECT * FROM `WaterData`"
@@ -284,7 +283,7 @@ async def get_db():
 
 
 
-@app.get("/noti")
+@app.get("/wqdb/noti")
 async def get_notification():
     db = mysql.connector.connect(**db_config)
     query = "SELECT * FROM `WaterData` ORDER BY `Datetime` DESC LIMIT 2"  # Retrieve the latest 2 rows
@@ -334,7 +333,7 @@ async def get_notification():
     return JSONResponse(content=notification)
 
 
-@app.get("/noti2")
+@app.get("/wqdb/noti2")
 async def get_notification():
     db = mysql.connector.connect(**db_config)
     query = "SELECT * FROM `WaterData` ORDER BY `Datetime` DESC LIMIT 2"  # Retrieve the latest 2 rows
@@ -378,7 +377,7 @@ async def get_notification():
 
     return JSONResponse(content=notification)
 
-@app.get("/db3")
+@app.get("/wqdb/db3")
 async def get_db(time_range: str):
     try:
         db = mysql.connector.connect(**db_config)
@@ -426,7 +425,7 @@ async def get_db(time_range: str):
         return JSONResponse(content={"message": str(e)}, status_code=500)
 
 
-@app.get("/device")
+@app.get("/wqdb/device")
 async def get_details():
     try:
         connection = mysql.connector.connect(**db_config)
